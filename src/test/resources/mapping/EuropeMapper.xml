@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shenchen.dao.IEuropeDao" >
+
+    <insert id="insertEuropeHistoryData" parameterType="com.shenchen.model.EuropeHistoryData" >
+        INSERT INTO `europe_history_data` (
+                    `match_id`,
+                    `league_name_simply`,
+                    `host_name`,
+                    `guest_name`,
+                    `match_time`,
+                    `host_goal`,
+                    `guest_goal`,
+                    `game_result`,
+                    `company_name`,
+                    `first_win`,
+                    `first_same`,
+                    `first_lost`,
+                    `win`,
+                    `same`,
+                    `lost`,
+                    `buy_win`,
+                    `buy_same`,
+                    `buy_lost`)
+        VALUES(
+            #{match_id,jdbcType=VARCHAR},
+            #{league_name_simply,jdbcType=VARCHAR},
+            #{host_name,jdbcType=VARCHAR},
+            #{guest_name,jdbcType=VARCHAR},
+            #{match_time,jdbcType=TIMESTAMP},
+            #{host_goal,jdbcType=INTEGER},
+            #{guest_goal,jdbcType=INTEGER},
+            #{game_result,jdbcType=INTEGER},
+            #{company_name,jdbcType=VARCHAR},
+            #{first_win,jdbcType=DECIMAL},
+            #{first_same,jdbcType=DECIMAL},
+            #{first_lost,jdbcType=DECIMAL},
+            #{win,jdbcType=DECIMAL},
+            #{same,jdbcType=DECIMAL},
+            #{lost,jdbcType=DECIMAL},
+            #{buy_win,jdbcType=DECIMAL},
+            #{buy_same,jdbcType=DECIMAL},
+            #{buy_lost,jdbcType=DECIMAL})
+        </insert>
+
+
+
+
+    <delete id="deleteEuropeHistoryData">
+        delete  from europe_history_data
+    </delete>
+
+
+</mapper>

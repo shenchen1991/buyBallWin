@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shenchen.dao.IAsiansDao" >
+
+    <insert id="insertAsiansHistoryData" parameterType="com.shenchen.model.AsiansHistoryData" >
+        INSERT INTO `asians_history_data` (
+                    `match_id`,
+                    `league_name_simply`,
+                    `host_name`,
+                    `guest_name`,
+                    `match_time`,
+                    `host_goal`,
+                    `guest_goal`,
+                    `game_result`,
+                    `company_name`,
+                    `first_let_ball`,
+                    `first_host_bet`,
+                    `first_guest_bet`,
+                    `let_ball`,
+                    `host_bet`,
+                    `guest_bet`,
+                    `buy_host`,
+                    `buy_guest`)
+        VALUES(
+            #{match_id,jdbcType=VARCHAR},
+            #{league_name_simply,jdbcType=VARCHAR},
+            #{host_name,jdbcType=VARCHAR},
+            #{guest_name,jdbcType=VARCHAR},
+            #{match_time,jdbcType=TIMESTAMP},
+            #{host_goal,jdbcType=INTEGER},
+            #{guest_goal,jdbcType=INTEGER},
+            #{game_result,jdbcType=INTEGER},
+            #{company_name,jdbcType=VARCHAR},
+            #{first_let_ball,jdbcType=DECIMAL},
+            #{first_host_bet,jdbcType=DECIMAL},
+            #{first_guest_bet,jdbcType=DECIMAL},
+            #{let_ball,jdbcType=DECIMAL},
+            #{host_bet,jdbcType=DECIMAL},
+            #{guest_bet,jdbcType=DECIMAL},
+            #{buy_host,jdbcType=DECIMAL},
+            #{buy_guest,jdbcType=DECIMAL})
+        </insert>
+
+
+
+    <select id="getHostAsiansData" resultType="com.shenchen.model.AsiansHistoryData"
+            parameterType = "com.shenchen.model.AnalyseQuery">
+        select * from asians_history_data
+          where league_name_simply = #{league_name_simply}
+          and host_name = #{host_name}
+        ORDER BY match_time desc limit 10
+    </select>
+
+    <select id="getGuestAsiansData" resultType="com.shenchen.model.AsiansHistoryData"
+            parameterType = "com.shenchen.model.AnalyseQuery">
+        select * from asians_history_data
+          where league_name_simply = #{league_name_simply}
+                and guest_name = #{guest_name}
+                ORDER BY match_time desc limit 10
+    </select>
+
+
+    <delete id="deleteAsiansHistoryData">
+        delete  from asians_history_data
+    </delete>
+
+
+
+
+</mapper>

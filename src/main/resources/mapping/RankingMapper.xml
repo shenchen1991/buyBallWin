@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shenchen.dao.IRankingDao" >
+
+    <insert id="insertTeamRankingData" parameterType="com.shenchen.model.TeamRankingData" >
+        INSERT INTO `team_ranking_data` (
+                    `league_name_simply`,
+                    `team_name`,
+                    `rank`,
+                    `total_game`,
+                    `win_game`,
+                    `same_game`,
+                    `lost_game`,
+                    `remark`)
+        VALUES(
+            #{league_name_simply,jdbcType=VARCHAR},
+            #{team_name,jdbcType=VARCHAR},
+            #{rank,jdbcType=INTEGER},
+            #{total_game,jdbcType=INTEGER},
+            #{win_game,jdbcType=INTEGER},
+            #{same_game,jdbcType=INTEGER},
+            #{lost_game,jdbcType=INTEGER},
+            #{remark,jdbcType=VARCHAR})
+        </insert>
+
+
+
+    <select id="getHostTeamRanking" resultType="com.shenchen.model.TeamRankingData"
+            parameterType = "com.shenchen.model.AnalyseQuery">
+        select * from team_ranking_data
+          where league_name_simply = #{league_name_simply}
+          and team_name = #{host_name}
+        ORDER BY gmt_create desc limit 1
+    </select>
+
+    <select id="getGuestTeamRanking" resultType="com.shenchen.model.TeamRankingData"
+            parameterType = "com.shenchen.model.AnalyseQuery">
+        select * from team_ranking_data
+          where league_name_simply = #{league_name_simply}
+          and team_name = #{guest_name}
+        ORDER BY gmt_create desc limit 1
+    </select>
+
+</mapper>
