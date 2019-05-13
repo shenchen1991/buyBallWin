@@ -17,6 +17,17 @@ public class SyncServiceTest extends TestSupport {
     }
 
     @Test
+    public void testSyncBaseDataFromNet(){
+        syncService.syncBaseDataFromNet();
+    }
+
+
+    @Test
+    public void testSyncBigSmallFromNet(){
+        syncService.syncBigSmallDataFromNet();
+    }
+
+    @Test
     public void testSyncRankData() throws IOException {
         syncService.syncRankData();
     }

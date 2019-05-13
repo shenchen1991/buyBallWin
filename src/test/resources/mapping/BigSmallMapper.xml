@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shenchen.dao.IBigSmallDao" >
+
+    <insert id="insertBigSmallData" parameterType="com.shenchen.model.BigSmallData">
+        INSERT INTO `big_samll_data` (
+                    `match_id`,
+                    `league_name_simply`,
+                    `host_name`,
+                    `guest_name`,
+                    `match_time`,
+                    `host_goal`,
+                    `guest_goal`,
+                    `total_goal`,
+                    `game_result`,
+                    `company_name`,
+                    `first_let_big_small`,
+                    `first_big`,
+                    `first_small`,
+                    `let_big_small`,
+                    `big`,
+                    `small`,
+                    `buy_big`,
+                    `buy_small`,
+                    `big_small_pre`,
+                    `buy_result`)
+        VALUES(
+            #{match_id,jdbcType=VARCHAR},
+            #{league_name_simply,jdbcType=VARCHAR},
+            #{host_name,jdbcType=VARCHAR},
+            #{guest_name,jdbcType=VARCHAR},
+            #{match_time,jdbcType=TIMESTAMP},
+            #{host_goal,jdbcType=INTEGER},
+            #{guest_goal,jdbcType=INTEGER},
+            #{total_goal,jdbcType=INTEGER},
+            #{game_result,jdbcType=INTEGER},
+            #{company_name,jdbcType=VARCHAR},
+            #{first_let_big_small,jdbcType=DECIMAL},
+            #{first_big,jdbcType=DECIMAL},
+            #{first_small,jdbcType=DECIMAL},
+            #{let_big_small,jdbcType=DECIMAL},
+            #{big,jdbcType=DECIMAL},
+            #{small,jdbcType=DECIMAL},
+            #{buy_big,jdbcType=DECIMAL},
+            #{buy_small,jdbcType=DECIMAL},
+            #{big_small_pre,jdbcType=INTEGER},
+            #{buy_result,jdbcType=DECIMAL})
+    </insert>
+
+    <select id="getBigSmallData" resultType="com.shenchen.model.BigSmallData">
+        select * from big_samll_data
+    </select>
+
+    <delete id="deleteAllBigSmallData">
+        delete from big_samll_data
+    </delete>
+
+
+    <update id="updateBigSmallData">
+        UPDATE big_samll_data
+        <set>
+            <if test="big_small_pre != null" >big_small_pre = #{big_small_pre,jdbcType=INTEGER},</if>
+            <if test="buy_result != null" >buy_result = #{buy_result,jdbcType=DECIMAL},</if>
+        </set>
+        WHERE big_small_data_id = #{big_small_data_id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateAllBigSmallData">
+        UPDATE big_samll_data
+        set big_small_pre = null,
+        buy_result = null
+    </update>
+
+
+</mapper>
