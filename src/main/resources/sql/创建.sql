@@ -1,0 +1,85 @@
+CREATE TABLE `asians_history_data` (
+  `asians_history_data_id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '自增',
+  `match_id` bigint(64) NOT NULL COMMENT '比赛id',
+  `league_name_simply` varchar(64) DEFAULT NULL COMMENT '联赛名称',
+  `host_name` varchar(64) DEFAULT NULL COMMENT '主队',
+  `guest_name` varchar(54) DEFAULT NULL COMMENT '客队',
+  `match_time` datetime DEFAULT NULL COMMENT '比赛时间',
+  `host_goal` int(4) DEFAULT NULL COMMENT '主队得分',
+  `guest_goal` int(4) DEFAULT NULL COMMENT '客队得分',
+  `game_result` int(4) DEFAULT NULL COMMENT '赛果，1主胜2平局3客胜',
+  `company_name` varchar(64) DEFAULT NULL COMMENT '赔率公司名称',
+  `first_let_ball` decimal(8,2) DEFAULT NULL COMMENT '网站初始让球',
+  `first_host_bet` decimal(8,2) DEFAULT NULL COMMENT '主场初始赔率',
+  `first_guest_bet` decimal(8,2) DEFAULT NULL COMMENT '客场初始赔率',
+  `let_ball` decimal(8,2) DEFAULT NULL COMMENT '网站即时让球',
+  `host_bet` decimal(8,2) DEFAULT NULL COMMENT '主场即时赔率',
+  `guest_bet` decimal(8,2) DEFAULT NULL COMMENT '客场即时赔率',
+  `buy_host` decimal(8,2) DEFAULT NULL COMMENT '购买主队结果',
+  `buy_guest` decimal(8,2) DEFAULT NULL COMMENT '购买客队结果',
+	`gmt_create` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  PRIMARY KEY (`asians_history_data_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='亚盘历史数据';
+
+CREATE TABLE `bigsamll_history_data` (
+  `bigsamll_history_data_id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '自增',
+  `match_id` bigint(64) NOT NULL COMMENT '比赛id',
+  `league_name_simply` varchar(64) DEFAULT NULL COMMENT '联赛名称',
+  `host_name` varchar(64) DEFAULT NULL COMMENT '主队',
+  `guest_name` varchar(54) DEFAULT NULL COMMENT '客队',
+  `match_time` datetime DEFAULT NULL COMMENT '比赛时间',
+  `host_goal` int(4) DEFAULT NULL COMMENT '主队得分',
+  `guest_goal` int(4) DEFAULT NULL COMMENT '客队得分',
+  `total_goal` int(4) DEFAULT NULL COMMENT '总得分',
+  `game_result` int(4) DEFAULT NULL COMMENT '赛果，1主胜2平局3客胜',
+  `company_name` varchar(64) DEFAULT NULL COMMENT '公司名称',
+  `first_let_big_small` decimal(8,2) DEFAULT NULL COMMENT '初始大小球',
+  `first_big` decimal(8,2) DEFAULT NULL COMMENT '初始大球赔率',
+  `first_small` decimal(8,2) DEFAULT NULL COMMENT '初始小球赔率',
+  `let_big_small` decimal(8,2) DEFAULT NULL COMMENT '大小球',
+  `big` decimal(8,2) DEFAULT NULL COMMENT '大球赔率',
+  `small` decimal(8,2) DEFAULT NULL COMMENT '小球赔率',
+  `buy_big` decimal(8,2) DEFAULT NULL COMMENT '买大球结果',
+  `buy_small` decimal(8,2) DEFAULT NULL COMMENT '买小球结果',
+	`gmt_create` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  PRIMARY KEY (`bigsamll_history_data_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='大小球历史数据';
+
+CREATE TABLE `europe_history_data` (
+  `europe_history_data_id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '自增',
+  `match_id` bigint(64) NOT NULL COMMENT '比赛id',
+  `league_name_simply` varchar(64) DEFAULT NULL COMMENT '联赛名称',
+  `host_name` varchar(64) DEFAULT NULL COMMENT '主队',
+  `guest_name` varchar(54) DEFAULT NULL COMMENT '客队',
+  `match_time` datetime DEFAULT NULL COMMENT '比赛时间',
+  `host_goal` int(4) DEFAULT NULL COMMENT '主队得分',
+  `guest_goal` int(4) DEFAULT NULL COMMENT '客队得分',
+  `game_result` int(4) DEFAULT NULL COMMENT '赛果，1主胜2平局3客胜',
+  `company_name` varchar(64) DEFAULT NULL COMMENT '公司名称',
+  `first_win` decimal(8,2) DEFAULT NULL COMMENT '初始主胜赔率',
+  `first_same` decimal(8,2) DEFAULT NULL COMMENT '初始平局赔率',
+  `first_lost` decimal(8,2) DEFAULT NULL COMMENT '初始客胜赔率',
+  `win` decimal(8,2) DEFAULT NULL COMMENT '即时主胜赔率',
+  `same` decimal(8,2) DEFAULT NULL COMMENT '即时平局赔率',
+  `lost` decimal(8,2) DEFAULT NULL COMMENT '即时客胜赔率',
+  `buy_win` decimal(8,2) DEFAULT NULL COMMENT '购买主胜',
+  `buy_same` decimal(8,2) DEFAULT NULL COMMENT '购买平局',
+  `buy_lost` decimal(8,2) DEFAULT NULL COMMENT '购买客场',
+	`gmt_create` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  PRIMARY KEY (`europe_history_data_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='欧赔历史数据';
+
+
+CREATE TABLE `team_ranking_data` (
+  `team_ranking_data_id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '自增',
+  `league_name_simply` varchar(64) DEFAULT NULL COMMENT '联赛名称',
+  `team_name` varchar(64) DEFAULT NULL COMMENT '队名',
+  `rank` int(4) DEFAULT NULL COMMENT '排名',
+  `total_game` int(4) DEFAULT NULL COMMENT '赛季总场次',
+  `win_game` int(4) DEFAULT NULL COMMENT '赛季胜场',
+  `same_game` int(4) DEFAULT NULL COMMENT '赛季平局',
+  `lost_game` int(4) DEFAULT NULL COMMENT '赛季败场',
+  `remark` varchar(64) DEFAULT NULL COMMENT '备注信息',
+  `gmt_create` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  PRIMARY KEY (`team_ranking_data_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=328 DEFAULT CHARSET=utf8 COMMENT='球队排名数据';
