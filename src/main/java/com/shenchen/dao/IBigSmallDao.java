@@ -14,5 +14,7 @@ public interface IBigSmallDao {
 
     Integer updateAllBigSmallData();
 
+    Integer updateBigSmallDataByLeague(String league_name_simply);
+
     List<BigSmallData> getBigSmallData();
 }

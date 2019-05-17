@@ -71,4 +71,11 @@
         buy_result = null
     </update>
 
+    <update id="updateBigSmallDataByLeague" parameterType="java.lang.String">
+        UPDATE big_samll_data
+        set big_small_pre = null,
+        buy_result = null
+        where league_name_simply = #{league_name_simply,jdbcType=VARCHAR}
+    </update>
+
 </mapper>
