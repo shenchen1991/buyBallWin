@@ -10,6 +10,8 @@ public interface IGameBaseDao {
 
     Integer deleteAllGameBaseData();
 
+    Integer deleteGameBaseData(GameBaseData gameBaseData);
+
     List<GameBaseData> queryHostGameBaseData(GameBaseData gameBaseData);
 
     List<GameBaseData> queryGuestGameBaseData(GameBaseData gameBaseData);

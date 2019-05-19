@@ -27,6 +27,10 @@
         delete  from game_base_data
     </delete>
 
+    <delete id="deleteGameBaseData" parameterType="com.shenchen.model.GameBaseData">
+        delete  from game_base_data where  match_id = #{match_id,jdbcType=VARCHAR}
+    </delete>
+
     <select id = "queryHostGameBaseData" resultType="com.shenchen.model.GameBaseData"
             parameterType="com.shenchen.model.GameBaseData">
         select * from game_base_data

@@ -20,7 +20,7 @@ public class BigSmallServiceTest extends TestSupport {
 
     @Test
     public void analyseBigSmallTest2(){
-        List<Map<String, Object>> result = bigSmallService.analyseBigSmall("荷甲");
+        List<Map<String, Object>> result = bigSmallService.analyseBigSmall("英冠");
         for (Map<String, Object> map : result){
             Set<String> keys = map.keySet();
             for(String key : keys){
@@ -34,6 +34,7 @@ public class BigSmallServiceTest extends TestSupport {
     @Test
     public void analyseBigSmallTest3(){
         bigSmallService.analyseBigSmall("荷甲",0.70D,0.30D,0.55D,0.45D);
+        bigSmallService.analyseBigSmall("英冠",0.75D,0.25D,0.15D,0.85D);
 
     }
 }

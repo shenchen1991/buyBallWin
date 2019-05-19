@@ -52,7 +52,7 @@ public class SyncServiceImpl implements ISyncService {
     public void syncDataFromNet() {
 //        singleThreadExecutor.execute(() -> {
             Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),-1);
-            Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-100);
+            Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-200);
 //            Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-50);
 
         //先移除所有数据
@@ -96,12 +96,10 @@ public class SyncServiceImpl implements ISyncService {
 
 
     @Override
-    @Transactional
     public void syncBaseDataFromNet() {
-        Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),-1);
+        Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),0);
         Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-800);
         //移除所有数据
-        gameBaseDao.deleteAllGameBaseData();
         while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
             List<GameBean> gameBeans;
             String dateStr = DateUtils.dayFormatString(startCalendar.getTime());
@@ -118,7 +116,6 @@ public class SyncServiceImpl implements ISyncService {
                         }
                         //同步赛事基本信息
                         createBaseGameData(gameBean);
-
                     }
                 }
                 startCalendar.add(Calendar.DAY_OF_MONTH, -1);// 往前一天
@@ -332,6 +329,10 @@ public class SyncServiceImpl implements ISyncService {
             gameBaseData.setGame_result(3);
         }
         gameBaseData.setMatch_time(DateUtils.str2Date("yyyy-MM-dd HH:mm:ss",gameBean.getMATCH_TIME()));
+        if(gameBaseData.getMatch_time().getTime() + 3*60*60000 > new Date().getTime()){
+            return;
+        }
+        gameBaseDao.deleteGameBaseData(gameBaseData);
         gameBaseDao.insertGameBaseData(gameBaseData);
 
     }
