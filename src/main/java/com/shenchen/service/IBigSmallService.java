@@ -7,7 +7,7 @@ public interface IBigSmallService {
 
     void analyseBigSmall();
 
-    void analyseBigSmall(String league_name_simply, double hostGet, double hostLost, double guestGet, double guestLost);
+    void analyseBigSmall(String league_name_simply, boolean reverse, double hostGet, double hostLost, double guestGet, double guestLost);
 
     List<Map<String, Object>> analyseBigSmall(String league_name_simply);
 }

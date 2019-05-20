@@ -114,7 +114,7 @@ public class BigSmallServiceImpl implements IBigSmallService {
     }
 
     @Override
-    public void analyseBigSmall(String league_name_simply, double hostGet, double hostLost, double guestGet, double guestLost) {
+    public void analyseBigSmall(String league_name_simply, boolean reverse,double hostGet, double hostLost, double guestGet, double guestLost) {
 
         List<Map<String, Object>> returnMap = new ArrayList<>();
         bigSmallDao.updateBigSmallDataByLeague(league_name_simply);
@@ -172,25 +172,55 @@ public class BigSmallServiceImpl implements IBigSmallService {
             perCount = hostGetGoal.add(hostLostGoal).add(guestGetGoal).add(guestLostGoal);
 
             bigSmallData.setBuy_result(new BigDecimal(0));
-            if(bigSmallData.getFirst_let_big_small().doubleValue() > perCount.doubleValue()){
 
-                if(bigSmallData.getFirst_big().doubleValue() >= bigSmallData.getFirst_small().doubleValue()){
-                    bigSmallData.setBig_small_pre(2);
-                    bigSmallData.setBuy_result(bigSmallData.getBuy_small());
-                }else {
+            if(reverse){
+                if(bigSmallData.getFirst_let_big_small().doubleValue() > perCount.doubleValue()){
+
+                    if(bigSmallData.getFirst_big().doubleValue() >= bigSmallData.getFirst_small().doubleValue()){
+                        bigSmallData.setBig_small_pre(1);
+                        bigSmallData.setBuy_result(bigSmallData.getBuy_big());
+                    }else {
+                        continue;
+                    }
+                }else if (bigSmallData.getFirst_let_big_small().doubleValue() < perCount.doubleValue()){
+
+                    if(bigSmallData.getFirst_big().doubleValue() <= bigSmallData.getFirst_small().doubleValue()){
+                        bigSmallData.setBig_small_pre(2);
+                        bigSmallData.setBuy_result(bigSmallData.getBuy_small());
+
+                    }else {
+                        continue;
+                    }
+                }else{
                     continue;
                 }
-            }else if (bigSmallData.getFirst_let_big_small().doubleValue() < perCount.doubleValue()){
 
-                if(bigSmallData.getFirst_big().doubleValue() <= bigSmallData.getFirst_small().doubleValue()){
-                    bigSmallData.setBig_small_pre(1);
-                    bigSmallData.setBuy_result(bigSmallData.getBuy_big());
-                }else {
-                    continue;
-                }
             }else{
-                continue;
+                if(bigSmallData.getFirst_let_big_small().doubleValue() > perCount.doubleValue()){
+
+                    if(bigSmallData.getFirst_big().doubleValue() >= bigSmallData.getFirst_small().doubleValue()){
+                        bigSmallData.setBig_small_pre(2);
+                        bigSmallData.setBuy_result(bigSmallData.getBuy_small());
+                    }else {
+                        continue;
+                    }
+                }else if (bigSmallData.getFirst_let_big_small().doubleValue() < perCount.doubleValue()){
+
+                    if(bigSmallData.getFirst_big().doubleValue() <= bigSmallData.getFirst_small().doubleValue()){
+                        bigSmallData.setBig_small_pre(1);
+                        bigSmallData.setBuy_result(bigSmallData.getBuy_big());
+                    }else {
+                        continue;
+                    }
+                }else{
+                    continue;
+                }
             }
+
+
+
+
+
             bigSmallData.setBuy_result(bigSmallData.getBuy_result().subtract(new BigDecimal(1)));
             bigSmallDao.updateBigSmallData(bigSmallData);
         }
