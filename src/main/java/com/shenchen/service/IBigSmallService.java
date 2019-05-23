@@ -1,5 +1,7 @@
 package com.shenchen.service;
 
+import com.shenchen.model.BigSmallResultData;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,5 +13,5 @@ public interface IBigSmallService {
 
     List<Map<String, Object>> analyseBigSmall(String league_name_simply);
 
-    List<Map<String, Object>> analyseBigSmallEfficient(String league_name_simply, boolean reverse);
+    List<BigSmallResultData> analyseBigSmallEfficient(String league_name_simply, boolean reverse);
 }

@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.shenchen.dao.IBigSmallDao;
 import com.shenchen.dao.IGameBaseDao;
-import com.shenchen.model.BigSmallData;
-import com.shenchen.model.GameBaseData;
-import com.shenchen.model.GuestGoalData;
-import com.shenchen.model.HostGoalData;
+import com.shenchen.model.*;
 import com.shenchen.service.IBigSmallService;
 import com.shenchen.util.RedisPoolJava;
 import org.apache.commons.lang.StringUtils;
@@ -354,8 +351,8 @@ public class BigSmallServiceImpl implements IBigSmallService {
 
 
     @Override
-    public List<Map<String, Object>> analyseBigSmallEfficient(String league_name_simply, boolean reverse) {
-        List<Map<String, Object>> returnMap = new ArrayList<>();
+    public List<BigSmallResultData> analyseBigSmallEfficient(String league_name_simply, boolean reverse) {
+        List<BigSmallResultData> returnMap = new ArrayList<>();
         //获取大小球数据
         List<BigSmallData> bigSmallDataList = bigSmallDao.getBigSmallData();
         double hostGet = 1D;double hostLost = 0D;
@@ -428,30 +425,37 @@ public class BigSmallServiceImpl implements IBigSmallService {
                     updateBigSmallData.add(toAddBig);
 
                 }
-                Map<String, Object> map = new HashMap<>();
-                map.put("league_name_simply",league_name_simply);
-                map.put("hostGet",hostGet);
-                map.put("hostLost",hostLost);
-                map.put("guestGet",guestGet);
-                map.put("guestLost",guestLost);
-                map.put("totalCount",updateBigSmallData.size());
-                Integer winCount = 0;
-                Integer lostCount = 0;
-                double sum = 0D;
-                for(BigSmallData bigSmallData : updateBigSmallData){
-                    sum = sum + bigSmallData.getBuy_result().doubleValue();
-                    if(bigSmallData.getBuy_result().doubleValue() > 0 ){
-                        winCount = winCount + 1;
-                    }else if (bigSmallData.getBuy_result().doubleValue() < 0){
-                        lostCount = lostCount + 1;
+
+                if(!CollectionUtils.isEmpty(updateBigSmallData)){
+                    BigSmallResultData bigSmallResultData = new BigSmallResultData();
+                    bigSmallResultData.setLeague_name_simply(league_name_simply);
+                    bigSmallResultData.setHostGet(hostGet);
+                    bigSmallResultData.setHostLost(hostLost);
+
+                    bigSmallResultData.setGuestGet(guestGet);
+                    bigSmallResultData.setGuestLost(guestLost);
+                    bigSmallResultData.setTotalCount(updateBigSmallData.size());
+
+
+                    Integer winCount = 0;
+                    Integer lostCount = 0;
+                    double sum = 0D;
+                    for(BigSmallData bigSmallData : updateBigSmallData){
+                        sum = sum + bigSmallData.getBuy_result().doubleValue();
+                        if(bigSmallData.getBuy_result().doubleValue() > 0 ){
+                            winCount = winCount + 1;
+                        }else if (bigSmallData.getBuy_result().doubleValue() < 0){
+                            lostCount = lostCount + 1;
+                        }
                     }
+                    bigSmallResultData.setSum(sum);
+                    bigSmallResultData.setWinCount(winCount);
+                    bigSmallResultData.setLostCount(lostCount);
+                    bigSmallResultData.setRate(sum/updateBigSmallData.size());
+                    BigDecimal winRate = new BigDecimal(winCount).divide(new BigDecimal(updateBigSmallData.size()),5,BigDecimal.ROUND_HALF_UP);
+                    bigSmallResultData.setWinRate(winRate.doubleValue());
+                    returnMap.add(bigSmallResultData);
                 }
-                map.put("sum",sum);
-                map.put("winCount",winCount);
-                map.put("lostCount",lostCount);
-                map.put("rate",sum/updateBigSmallData.size());
-                map.put("winRate",new BigDecimal(winCount).divide(new BigDecimal(updateBigSmallData.size()),5,BigDecimal.ROUND_HALF_UP));
-                returnMap.add(map);
                 guestGet = guestGet - 0.05D;
                 guestLost = guestLost + 0.05D;
             }
