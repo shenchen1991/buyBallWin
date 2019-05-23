@@ -10,4 +10,6 @@ public interface IBigSmallService {
     void analyseBigSmall(String league_name_simply, boolean reverse, double hostGet, double hostLost, double guestGet, double guestLost);
 
     List<Map<String, Object>> analyseBigSmall(String league_name_simply);
+
+    List<Map<String, Object>> analyseBigSmallEfficient(String league_name_simply, boolean reverse);
 }

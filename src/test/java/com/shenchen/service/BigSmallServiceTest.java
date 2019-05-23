@@ -32,6 +32,19 @@ public class BigSmallServiceTest extends TestSupport {
     }
 
     @Test
+    public void analyseBigSmallEfficientTest2(){
+        List<Map<String, Object>> result = bigSmallService.analyseBigSmallEfficient("英甲",true);
+        for (Map<String, Object> map : result){
+            Set<String> keys = map.keySet();
+            for(String key : keys){
+                System.out.print(key + "=" + map.get(key) + "   ");
+            }
+            System.out.println();
+
+        }
+    }
+
+    @Test
     public void analyseBigSmallTest4(){
         List<Map<String, Object>> result = bigSmallService.analyseBigSmall("英乙");
         for (Map<String, Object> map : result){
@@ -62,7 +75,7 @@ public class BigSmallServiceTest extends TestSupport {
 //        bigSmallService.analyseBigSmall("荷甲",0.70D,0.30D,0.55D,0.45D);
 //        bigSmallService.analyseBigSmall("英冠",0.75D,0.25D,0.15D,0.85D);
 //        bigSmallService.analyseBigSmall("意甲",true,0.65D,0.35D,0.80D,0.20D);
-        bigSmallService.analyseBigSmall("英甲",true,0.90D,0.10D,0.90D,0.10D);
+        bigSmallService.analyseBigSmall("英甲",true,0.65D,0.35D,0.85D,0.15D);
 
     }
 }
