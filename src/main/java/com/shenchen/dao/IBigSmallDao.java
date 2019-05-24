@@ -10,6 +10,8 @@ public interface IBigSmallDao {
 
     Integer deleteAllBigSmallData();
 
+    Integer deleteAllBigSmallDataBy(BigSmallData bigSmallData);
+
     Integer updateBigSmallData(BigSmallData bigSmallData);
 
     Integer updateAllBigSmallData();

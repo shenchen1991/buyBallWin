@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shenchen.dao.IBigSmallModulusDao" >
+
+    <insert id="insertBigSmallModulus" parameterType="com.shenchen.model.BigSmallModulus">
+        INSERT INTO `big_small_modulus` (
+                    `league_name_simply`,
+                    `host_get`,
+                    `host_lost`,
+                    `guest_get`,
+                    `guest_lost`,
+                    `reverse`,
+                    `total_count`,
+                    `win_count`,
+                    `lost_count`,
+                    `buy_count`,
+                    `sum`,
+                    `rate`,
+                    `win_rate`)
+        VALUES(
+            #{league_name_simply,jdbcType=VARCHAR},
+            #{host_get,jdbcType=DECIMAL},
+            #{host_lost,jdbcType=DECIMAL},
+            #{guest_get,jdbcType=DECIMAL},
+            #{guest_lost,jdbcType=DECIMAL},
+            #{reverse,jdbcType=INTEGER},
+            #{total_count,jdbcType=INTEGER},
+            #{win_count,jdbcType=INTEGER},
+            #{lost_count,jdbcType=INTEGER},
+            #{buy_count,jdbcType=INTEGER},
+            #{sum,jdbcType=DECIMAL},
+            #{rate,jdbcType=DECIMAL},
+            #{win_rate,jdbcType=DECIMAL})
+    </insert>
+
+    <delete id="deleteAllBigSmallModulus">
+        delete from big_small_modulus
+    </delete>
+
+
+</mapper>

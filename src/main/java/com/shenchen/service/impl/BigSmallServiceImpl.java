@@ -351,14 +351,16 @@ public class BigSmallServiceImpl implements IBigSmallService {
 
 
     @Override
-    public List<BigSmallResultData> analyseBigSmallEfficient(String league_name_simply, boolean reverse) {
-        List<BigSmallResultData> returnMap = new ArrayList<>();
+    public List<BigSmallModulus> analyseBigSmallEfficient(String league_name_simply, boolean reverse) {
+        List<BigSmallModulus> returnMap = new ArrayList<>();
         //获取大小球数据
         List<BigSmallData> bigSmallDataList = bigSmallDao.getBigSmallData();
-        double hostGet = 1D;double hostLost = 0D;
-        while(hostGet > 0){
-            double guestGet= 1D;double guestLost = 0D;
-            while(guestGet > 0){
+        BigDecimal hostGet = new BigDecimal(1);
+        BigDecimal hostLost = new BigDecimal(0);
+        while(hostGet.doubleValue() > 0){
+            BigDecimal guestGet= new BigDecimal(1);
+            BigDecimal guestLost = new BigDecimal(0);
+            while(guestGet.doubleValue() > 0){
                 List<BigSmallData> updateBigSmallData = new ArrayList<>();
                 for(BigSmallData bigSmallData :  bigSmallDataList){
                     if(!league_name_simply.equals(bigSmallData.getLeague_name_simply())){
@@ -374,15 +376,15 @@ public class BigSmallServiceImpl implements IBigSmallService {
                         continue;
                     }
                     BigDecimal perCount;
-                    BigDecimal hostGetGoal = hostGoalData.getGetGoal().divide(hostGoalData.getGameNumber(),5,BigDecimal.ROUND_HALF_UP);
-                    hostGetGoal = hostGetGoal.multiply(new BigDecimal(hostGet));
-                    BigDecimal hostLostGoal = hostGoalData.getLostGoal().divide(hostGoalData.getGameNumber(),5,BigDecimal.ROUND_HALF_UP);
-                    hostLostGoal = hostLostGoal.multiply(new BigDecimal(hostLost));
+                    BigDecimal hostGetGoal = hostGoalData.getGetGoal().divide(hostGoalData.getGameNumber(),2,BigDecimal.ROUND_HALF_UP);
+                    hostGetGoal = hostGetGoal.multiply(hostGet);
+                    BigDecimal hostLostGoal = hostGoalData.getLostGoal().divide(hostGoalData.getGameNumber(),2,BigDecimal.ROUND_HALF_UP);
+                    hostLostGoal = hostLostGoal.multiply(hostLost);
 
-                    BigDecimal guestGetGoal = guestGoalData.getGetGoal().divide(guestGoalData.getGameNumber(),5,BigDecimal.ROUND_HALF_UP);
-                    guestGetGoal = guestGetGoal.multiply(new BigDecimal(guestGet));
-                    BigDecimal guestLostGoal = hostGoalData.getLostGoal().divide(guestGoalData.getGameNumber(),5,BigDecimal.ROUND_HALF_UP);
-                    guestLostGoal = guestLostGoal.multiply(new BigDecimal(guestLost));
+                    BigDecimal guestGetGoal = guestGoalData.getGetGoal().divide(guestGoalData.getGameNumber(),2,BigDecimal.ROUND_HALF_UP);
+                    guestGetGoal = guestGetGoal.multiply(guestGet);
+                    BigDecimal guestLostGoal = hostGoalData.getLostGoal().divide(guestGoalData.getGameNumber(),2,BigDecimal.ROUND_HALF_UP);
+                    guestLostGoal = guestLostGoal.multiply(guestLost);
 
                     perCount = hostGetGoal.add(hostLostGoal).add(guestGetGoal).add(guestLostGoal);
 
@@ -408,7 +410,6 @@ public class BigSmallServiceImpl implements IBigSmallService {
                         continue;
                     }
 
-
                     if(reverse){
                         if(bigSmallData.getBig_small_pre() == 1){
                             bigSmallData.setBig_small_pre(2);
@@ -427,14 +428,14 @@ public class BigSmallServiceImpl implements IBigSmallService {
                 }
 
                 if(!CollectionUtils.isEmpty(updateBigSmallData)){
-                    BigSmallResultData bigSmallResultData = new BigSmallResultData();
-                    bigSmallResultData.setLeague_name_simply(league_name_simply);
-                    bigSmallResultData.setHostGet(hostGet);
-                    bigSmallResultData.setHostLost(hostLost);
+                    BigSmallModulus bigSmallModulus = new BigSmallModulus();
+                    bigSmallModulus.setLeague_name_simply(league_name_simply);
+                    bigSmallModulus.setHost_get(hostGet);
+                    bigSmallModulus.setHost_lost(hostLost);
 
-                    bigSmallResultData.setGuestGet(guestGet);
-                    bigSmallResultData.setGuestLost(guestLost);
-                    bigSmallResultData.setTotalCount(updateBigSmallData.size());
+                    bigSmallModulus.setGuest_get(guestGet);
+                    bigSmallModulus.setGuest_lost(guestLost);
+                    bigSmallModulus.setTotal_count(updateBigSmallData.size());
 
 
                     Integer winCount = 0;
@@ -448,19 +449,24 @@ public class BigSmallServiceImpl implements IBigSmallService {
                             lostCount = lostCount + 1;
                         }
                     }
-                    bigSmallResultData.setSum(sum);
-                    bigSmallResultData.setWinCount(winCount);
-                    bigSmallResultData.setLostCount(lostCount);
-                    bigSmallResultData.setRate(sum/updateBigSmallData.size());
-                    BigDecimal winRate = new BigDecimal(winCount).divide(new BigDecimal(updateBigSmallData.size()),5,BigDecimal.ROUND_HALF_UP);
-                    bigSmallResultData.setWinRate(winRate.doubleValue());
-                    returnMap.add(bigSmallResultData);
+                    if(winCount + lostCount > 0 ){
+                        bigSmallModulus.setSum(new BigDecimal(sum));
+                        bigSmallModulus.setWin_count(winCount);
+                        bigSmallModulus.setLost_count(lostCount);
+                        bigSmallModulus.setBuy_count(winCount + lostCount);
+                        bigSmallModulus.setRate(new BigDecimal(sum/bigSmallModulus.getBuy_count()));
+                        BigDecimal winRate = new BigDecimal(winCount).divide(new BigDecimal(bigSmallModulus.getBuy_count()),5,BigDecimal.ROUND_HALF_UP);
+                        bigSmallModulus.setWin_rate(winRate);
+                        bigSmallModulus.setReverse(reverse ? 2 : 1);
+                        returnMap.add(bigSmallModulus);
+                    }
+
                 }
-                guestGet = guestGet - 0.05D;
-                guestLost = guestLost + 0.05D;
+                guestGet = guestGet.subtract(new BigDecimal(0.05));
+                guestLost = guestLost.add(new BigDecimal(0.05));
             }
-            hostGet = hostGet - 0.05D;
-            hostLost =hostLost + 0.05D;
+            hostGet = hostGet.subtract(new BigDecimal(0.05));
+            hostLost =hostLost.add(new BigDecimal(0.05));
         }
         return returnMap;
 

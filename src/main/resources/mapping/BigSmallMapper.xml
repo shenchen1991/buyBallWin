@@ -3,7 +3,7 @@
 <mapper namespace="com.shenchen.dao.IBigSmallDao" >
 
     <insert id="insertBigSmallData" parameterType="com.shenchen.model.BigSmallData">
-        INSERT INTO `big_samll_data` (
+        INSERT INTO `big_small_data` (
                     `match_id`,
                     `league_name_simply`,
                     `host_name`,
@@ -48,16 +48,20 @@
     </insert>
 
     <select id="getBigSmallData" resultType="com.shenchen.model.BigSmallData">
-        select * from big_samll_data
+        select * from big_small_data
     </select>
 
     <delete id="deleteAllBigSmallData">
-        delete from big_samll_data
+        delete from big_small_data
+    </delete>
+
+    <delete id="deleteAllBigSmallDataBy" parameterType="com.shenchen.model.BigSmallData">
+        delete from big_small_data where match_id = #{match_id,jdbcType=VARCHAR}
     </delete>
 
 
     <update id="updateBigSmallData">
-        UPDATE big_samll_data
+        UPDATE big_small_data
         <set>
             <if test="big_small_pre != null" >big_small_pre = #{big_small_pre,jdbcType=INTEGER},</if>
             <if test="buy_result != null" >buy_result = #{buy_result,jdbcType=DECIMAL},</if>
@@ -66,13 +70,13 @@
     </update>
 
     <update id="updateAllBigSmallData">
-        UPDATE big_samll_data
+        UPDATE big_small_data
         set big_small_pre = null,
         buy_result = null
     </update>
 
     <update id="updateBigSmallDataByLeague" parameterType="java.lang.String">
-        UPDATE big_samll_data
+        UPDATE big_small_data
         set big_small_pre = null,
         buy_result = null
         where league_name_simply = #{league_name_simply,jdbcType=VARCHAR}

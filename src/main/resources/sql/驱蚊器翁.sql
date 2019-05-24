@@ -1,5 +1,5 @@
-CREATE TABLE `big_samll_data` (
-  `big_samll_data_id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '自增',
+CREATE TABLE `big_small_data` (
+  `big_small_data_id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '自增',
   `match_id` bigint(64) NOT NULL COMMENT '比赛id',
   `league_name_simply` varchar(64) DEFAULT NULL COMMENT '联赛名称',
   `host_name` varchar(64) DEFAULT NULL COMMENT '主队',
@@ -21,5 +21,5 @@ CREATE TABLE `big_samll_data` (
   `big_small_pre` int(4) DEFAULT NULL COMMENT '规律预测 大球-1 小球-2',
   `buy_result` decimal(8,2) DEFAULT NULL COMMENT '购买结果',
 	`gmt_create` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  PRIMARY KEY (`big_samll_data_id`)
+  PRIMARY KEY (`big_small_data_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='大小球数据';

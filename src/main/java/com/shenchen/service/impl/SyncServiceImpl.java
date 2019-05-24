@@ -77,7 +77,7 @@ public class SyncServiceImpl implements ISyncService {
                             //亚赔数据
 //                            createAsiansHistoryData(gameBean);
                             //大小球数据
-                            createBigSmallHistoryData(gameBean);
+//                            createBigSmallHistoryData(gameBean);
                             //欧赔数据
 //                            createEuropeHistoryData(gameBean);
                             //同步赛事基本信息
@@ -97,8 +97,8 @@ public class SyncServiceImpl implements ISyncService {
 
     @Override
     public void syncBaseDataFromNet() {
-        Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),0);
-        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-800);
+        Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),-1);
+        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-30);
         //移除所有数据
         while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
             List<GameBean> gameBeans;
@@ -133,9 +133,7 @@ public class SyncServiceImpl implements ISyncService {
     @Transactional
     public void syncBigSmallDataFromNet() {
         Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),-1);
-        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-200);
-        //先移除所有数据
-        bigSmallDao.deleteAllBigSmallData();
+        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-20);
         while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
             List<GameBean> gameBeans;
             String dateStr = DateUtils.dayFormatString(startCalendar.getTime());
@@ -269,6 +267,7 @@ public class SyncServiceImpl implements ISyncService {
                     bigSmallData.setBuy_big(new BigDecimal(0));
                     bigSmallData.setBuy_small(new BigDecimal(1.8));
                 }
+                bigSmallDao.deleteAllBigSmallDataBy(bigSmallData);
                 bigSmallDao.insertBigSmallData(bigSmallData);
             }
         }

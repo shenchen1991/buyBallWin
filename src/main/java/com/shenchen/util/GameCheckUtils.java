@@ -42,9 +42,10 @@ public class GameCheckUtils implements Serializable {
     public static List<String> gameList(){
         String[] strings = {
 
-                "阿甲","阿乙",
-                "波兰超",
-                "澳洲甲",
+                "阿甲",
+//                "阿乙",
+//                "波兰超",
+//                "澳洲甲",
 //                "英超","英冠","英甲","英乙",
 //                "意甲","意乙",
 //                "西甲","西乙",

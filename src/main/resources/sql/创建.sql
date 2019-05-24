@@ -21,7 +21,7 @@ CREATE TABLE `asians_history_data` (
   PRIMARY KEY (`asians_history_data_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='亚盘历史数据';
 
-CREATE TABLE `bigsamll_history_data` (
+CREATE TABLE `big_small_history_data` (
   `bigsamll_history_data_id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '自增',
   `match_id` bigint(64) NOT NULL COMMENT '比赛id',
   `league_name_simply` varchar(64) DEFAULT NULL COMMENT '联赛名称',
