@@ -7,4 +7,6 @@ public interface IBigSmallModulusService {
     Integer insertBigSmallModulus(BigSmallModulus bigSmallModulus);
 
     Integer deleteAllBigSmallModulus();
+
+    void createBigSmallModulus();
 }

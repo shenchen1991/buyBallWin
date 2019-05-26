@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="static/element-ui/lib/theme-chalk/index.css"/>
+    <link rel="stylesheet" href="static/font/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="static/css/goods.css"/>
+    <link rel="stylesheet" href="static/css/public.css"/>
+</head>
+<body>
+<div id="app">
+    <!-- header -->
+    <el-menu mode="horizontal" :default-active="activeIndex">
+        <el-menu-item index="0" id="logo">偏门秘籍 最新请求时间：{{createTime}}</el-menu-item>
+    </el-menu>
+    <div id="main">
+        <el-col>
+            <el-card shadow="hover">
+                <!-- 功能按钮 -->
+                <div>
+                    <el-row>
+                        <el-button icon="el-icon-refresh"
+                                   @click="getAllBigSmallData()">刷新获取最新
+                        </el-button>
+                        <el-button icon="el-icon-refresh"
+                                   @click="calculationResult()">开始预测
+                        </el-button>
+
+                        <el-button icon="el-icon-refresh"
+                                   @click="syncDataFromNetIncrement()">数据同步+购买结算
+                        </el-button>
+                        <el-button icon="el-icon-refresh"
+                                   @click="getIsEneBigSmallData()">已结算数据
+                        </el-button>
+                        <el-button icon="el-icon-refresh"
+                                   @click="getIsNotEneBigSmallData()">未结算数据
+                        </el-button>
+                        <el-button icon="el-icon-refresh"
+                                   @click="getIsEneBigSmallData()">购买，结算数据
+                        </el-button>
+                        <el-button icon="el-icon-refresh"
+                                   @click="getIsNotEneBigSmallData()">购买，未结算数据
+                        </el-button>
+
+                    </el-row>
+                </div>
+                <!-- 列表 -->
+                <el-table
+                        ref="bigSmall"
+                        :data="bigSmall"
+                        border
+                        tooltip-effect="dark"
+                        :height="750"
+                        even-bg-color="#f4f4f4"
+                        row-hover-color="#eee"
+                        row-click-color="#edf7ff"
+                        style="width: 100%">
+                    <el-table-column
+                            ref="selection"
+                            align="center"
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            id="league_name_simply"
+                            prop="league_name_simply"
+                            align="center"
+                            fixed
+                            label="联赛名称"
+                            width="80">
+                    </el-table-column>
+
+                    <el-table-column
+                            align="center"
+                            label="对战信息"
+                            width="180"
+                            style="background-color: red">
+                        <template scope="scope">
+                            <span>
+                                {{scope.row.host_name}}({{scope.row.host_goal}})
+                            </span>
+                            <br/>
+                            <span>
+                                {{scope.row.match_time_str}}
+                            </span>
+                            <br/>
+                            <span>
+                                {{scope.row.guest_name}}({{scope.row.guest_goal}})
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column
+                            align="center"
+                            label="总进球数"
+                            width="85"
+                            style="background-color: red">
+                        <template scope="scope">
+                            <span>
+                                {{scope.row.total_goal}}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column
+                            align="center"
+                            label="初始数据"
+                            width="85"
+                            style="background-color: red">
+                        <template scope="scope">
+                            <span style="color: red">
+                                {{scope.row.first_big}}
+                            </span>
+                            <br/>
+                            <span style="color: red">
+                                {{scope.row.first_let_big_small}}球
+                            </span>
+                            <br/>
+                            <span style="color: red">
+                                {{scope.row.first_small}}
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            label="即时数据"
+                            width="85"
+                            style="background-color: red">
+                        <template scope="scope">
+                            <span>
+                                {{scope.row.big}}
+                            </span>
+                            <br/>
+                            <span>
+                                {{scope.row.let_big_small}}球
+                            </span>
+                            <br/>
+                            <span>
+                                {{scope.row.small}}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column
+                            align="center"
+                            label="预测结果"
+                            width="100"
+                            show-overflow-tooltip>
+                        <template scope="scope">
+                            <span v-if="scope.row.big_small_pre === 1 "style="color: red">
+                                大球
+                            </span>
+                            <span v-else-if="scope.row.big_small_pre === 2 " style="color: red" >
+                                小球
+                            </span>
+                            <span v-else>
+                                暂不购买
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            label="购买结果"
+                            width="140"
+                            show-overflow-tooltip>
+                        <template scope="scope">
+                            <span v-if="scope.row.is_end === 0 ">
+                                未结算
+                            </span>
+                            <span v-else-if="scope.row.buy_result_real > 0 "  >
+                                盈利({{scope.row.buy_result_real}})
+                            </span>
+                            <span v-else-if="scope.row.buy_result_real === 0 " style="color: red" >
+                                走水
+                            </span>
+                            <span v-else-if="scope.row.buy_result_real < 0 " style="color: red">
+                                亏损({{scope.row.buy_result_real}})
+                            </span>
+                            <span v-else >
+                                已经算，未购买
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            label="预算胜率/"
+                            width="100"
+                            style="color: red">
+                        <template scope="scope">
+                            <span v-if="scope.row.modulus_id != null" style="color: red">
+                                {{scope.row.bigSmallModulus.win_rate}}
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            align="center"
+                            label="收益率"
+                            width="100"
+                            style="color: red">
+                        <template scope="scope">
+                            <span v-if="scope.row.modulus_id != null" style="color: red">
+                                {{scope.row.bigSmallModulus.rate}}
+                            </span>
+                        </template>
+                    </el-table-column>
+
+                </el-table>
+            </el-card>
+        </el-col>
+    </div>
+
+    <!-- footer -->
+    <div class="footer">
+        <el-container>
+            <el-footer>
+                <el-row :gutter="20">
+                    <el-col :span="8" :offset="10">
+                        <div class="footer-inner">
+                            <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2019</span>
+                                <span class="with-love">
+                                    <i class="fa fa-heartbeat"></i>
+                                </span>
+                                <span class="author" itemprop="copyrightHolder">TyCoding</span>
+                            </div>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-footer>
+        </el-container>
+    </div>
+
+</div>
+</body>
+<script type="text/javascript" src="static/vue/vue.js"></script>
+<script type="text/javascript" src="static/element-ui/lib/index.js"></script>
+<script type="text/javascript" src="static/vue/vue-resource.js"></script>
+<script type="text/javascript" src="static/js/bigSmall.js"></script>
+</html>

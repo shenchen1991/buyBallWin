@@ -12,6 +12,9 @@ import java.util.Date;
 public class BigSmallModulus implements Serializable {
     private static final long serialVersionUID = 1188436762022698740L;
 
+    //id
+    private String big_small_modulus_id;
+
     //联赛
     private String league_name_simply;
 

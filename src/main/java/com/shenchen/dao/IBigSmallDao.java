@@ -6,17 +6,31 @@ import java.util.List;
 
 public interface IBigSmallDao {
 
+    Integer insertBigSmallHistoryData(BigSmallData bigSmallData);
+
+    List<BigSmallData> getBigSmallHistoryData();
+
+    Integer deleteBigSmallHistoryDataBy(BigSmallData bigSmallData);
+
+    Integer deleteAllBigSmallHistoryData();
+
+    Integer updateBigSmallHistoryData(BigSmallData bigSmallData);
+
+    Integer updateAllBigSmallHistoryData();
+
+    Integer updateBigSmallHistoryDataByLeague(String league_name_simply);
+
+
     Integer insertBigSmallData(BigSmallData bigSmallData);
 
-    Integer deleteAllBigSmallData();
+    Integer deleteBigSmallNewDataBy(BigSmallData bigSmallData);
 
-    Integer deleteAllBigSmallDataBy(BigSmallData bigSmallData);
+    List<BigSmallData> getBigSmallData();
+
+    List<BigSmallData> getBigSmallDataBy(BigSmallData bigSmallData);
+
+    BigSmallData getBigSmallDataByMatchId(String match_id);
 
     Integer updateBigSmallData(BigSmallData bigSmallData);
 
-    Integer updateAllBigSmallData();
-
-    Integer updateBigSmallDataByLeague(String league_name_simply);
-
-    List<BigSmallData> getBigSmallData();
 }

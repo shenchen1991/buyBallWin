@@ -1,17 +1,18 @@
 package com.shenchen.service;
 
+import com.shenchen.model.BigSmallData;
+import com.shenchen.model.BigSmallDataResult;
 import com.shenchen.model.BigSmallModulus;
 
 import java.util.List;
-import java.util.Map;
 
 public interface IBigSmallService {
 
-    void analyseBigSmall();
-
-    void analyseBigSmall(String league_name_simply, boolean reverse, double hostGet, double hostLost, double guestGet, double guestLost);
-
-    List<Map<String, Object>> analyseBigSmall(String league_name_simply);
-
     List<BigSmallModulus> analyseBigSmallEfficient(String league_name_simply, boolean reverse);
+
+    void calculationResult();
+
+    List<BigSmallDataResult> getAllBigSmallResultData();
+
+    List<BigSmallDataResult> getBigSmallResultDataBy(BigSmallData bigSmallData);
 }

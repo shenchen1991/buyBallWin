@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.shenchen.dao.IBigSmallDao" >
 
-    <insert id="insertBigSmallData" parameterType="com.shenchen.model.BigSmallData">
-        INSERT INTO `big_small_data` (
+
+
+
+
+    <insert id="insertBigSmallHistoryData" parameterType="com.shenchen.model.BigSmallData">
+        INSERT INTO `big_small_history_data` (
                     `match_id`,
                     `league_name_simply`,
                     `host_name`,
@@ -47,17 +51,22 @@
             #{buy_result,jdbcType=DECIMAL})
     </insert>
 
-    <select id="getBigSmallData" resultType="com.shenchen.model.BigSmallData">
-        select * from big_small_data
+
+
+    <select id="getBigSmallHistoryData" resultType="com.shenchen.model.BigSmallData">
+        select * from big_small_history_data
     </select>
 
-    <delete id="deleteAllBigSmallData">
-        delete from big_small_data
+    <delete id="deleteBigSmallHistoryDataBy" parameterType="com.shenchen.model.BigSmallData">
+        delete from big_small_history_data where match_id =  #{match_id,jdbcType=VARCHAR}
     </delete>
 
+    <delete id="deleteAllBigSmallHistoryData">
+        delete from big_small_history_data
+    </delete>
 
-    <update id="updateBigSmallData">
-        UPDATE big_small_data
+    <update id="updateBigSmallHistoryData">
+        UPDATE big_small_history_data
         <set>
             <if test="big_small_pre != null" >big_small_pre = #{big_small_pre,jdbcType=INTEGER},</if>
             <if test="buy_result != null" >buy_result = #{buy_result,jdbcType=DECIMAL},</if>
@@ -65,17 +74,112 @@
         WHERE big_small_data_id = #{big_small_data_id,jdbcType=INTEGER}
     </update>
 
-    <update id="updateAllBigSmallData">
-        UPDATE big_small_data
+    <update id="updateAllBigSmallHistoryData">
+        UPDATE big_small_history_data
         set big_small_pre = null,
         buy_result = null
     </update>
 
-    <update id="updateBigSmallDataByLeague" parameterType="java.lang.String">
-        UPDATE big_small_data
+    <update id="updateBigSmallHistoryDataByLeague" parameterType="java.lang.String">
+        UPDATE big_small_history_data
         set big_small_pre = null,
         buy_result = null
         where league_name_simply = #{league_name_simply,jdbcType=VARCHAR}
+    </update>
+
+
+
+
+
+
+    <insert id="insertBigSmallData" parameterType="com.shenchen.model.BigSmallData">
+            INSERT INTO `big_small_data` (
+            `match_id`,
+            `league_name_simply`,
+            `host_name`,
+            `guest_name`,
+            `match_time`,
+            `host_goal`,
+            `guest_goal`,
+            `total_goal`,
+            `game_result`,
+            `company_name`,
+            `first_let_big_small`,
+            `first_big`,
+            `first_small`,
+            `let_big_small`,
+            `big`,
+            `small`,
+            `buy_big`,
+            `buy_small`,
+            `big_small_pre`,
+            `buy_result_real`)
+            VALUES(
+            #{match_id,jdbcType=VARCHAR},
+            #{league_name_simply,jdbcType=VARCHAR},
+            #{host_name,jdbcType=VARCHAR},
+            #{guest_name,jdbcType=VARCHAR},
+            #{match_time,jdbcType=TIMESTAMP},
+            #{host_goal,jdbcType=INTEGER},
+            #{guest_goal,jdbcType=INTEGER},
+            #{total_goal,jdbcType=INTEGER},
+            #{game_result,jdbcType=INTEGER},
+            #{company_name,jdbcType=VARCHAR},
+            #{first_let_big_small,jdbcType=DECIMAL},
+            #{first_big,jdbcType=DECIMAL},
+            #{first_small,jdbcType=DECIMAL},
+            #{let_big_small,jdbcType=DECIMAL},
+            #{big,jdbcType=DECIMAL},
+            #{small,jdbcType=DECIMAL},
+            #{buy_big,jdbcType=DECIMAL},
+            #{buy_small,jdbcType=DECIMAL},
+            #{big_small_pre,jdbcType=INTEGER},
+            #{buy_result_real,jdbcType=DECIMAL})
+    </insert>
+
+    <delete id="deleteBigSmallNewDataBy" parameterType="com.shenchen.model.BigSmallData">
+        delete from big_small_data where match_id =  #{match_id,jdbcType=VARCHAR}
+    </delete>
+
+
+    <select id="getBigSmallData" resultType="com.shenchen.model.BigSmallData">
+        select * from big_small_data ORDER BY match_time
+    </select>
+
+    <select id="getBigSmallDataBy" resultType="com.shenchen.model.BigSmallData" parameterType="com.shenchen.model.BigSmallData">
+        select * from big_small_data
+        <where>
+            AND is_end = #{is_end,jdbcType=INTEGER}
+            <if test="isBuy == 1">
+                AND modulus_id is not null
+            </if>
+            <if test="isBuy == 0">
+                AND modulus_id is null
+            </if>
+        </where>
+        ORDER BY match_time
+    </select>
+
+    <select id="getBigSmallDataByMatchId" resultType="com.shenchen.model.BigSmallData">
+        select * from big_small_data where match_id = #{match_id,jdbcType=VARCHAR}
+    </select>
+
+
+    <update id="updateBigSmallData">
+        UPDATE big_small_data
+        <set>
+            <if test="host_goal != null" >host_goal = #{host_goal,jdbcType=INTEGER},</if>
+            <if test="guest_goal != null" >guest_goal = #{guest_goal,jdbcType=INTEGER},</if>
+            <if test="total_goal != null" >total_goal = #{total_goal,jdbcType=INTEGER},</if>
+            <if test="game_result != null" >game_result = #{game_result,jdbcType=INTEGER},</if>
+            <if test="buy_big != null" >buy_big = #{buy_big,jdbcType=DECIMAL},</if>
+            <if test="buy_small != null" >buy_small = #{buy_small,jdbcType=DECIMAL},</if>
+            <if test="big_small_pre != null" >big_small_pre = #{big_small_pre,jdbcType=INTEGER},</if>
+            <if test="buy_result_real != null" >buy_result_real = #{buy_result_real,jdbcType=DECIMAL},</if>
+            <if test="modulus_id != null" >modulus_id = #{modulus_id,jdbcType=INTEGER},</if>
+            <if test="is_end != null" >is_end = #{is_end,jdbcType=INTEGER},</if>
+        </set>
+        WHERE match_id = #{match_id,jdbcType=VARCHAR}
     </update>
 
 </mapper>

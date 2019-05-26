@@ -38,4 +38,16 @@
     </delete>
 
 
+    <select id="getOneBigSmallModulus" resultType="com.shenchen.model.BigSmallModulus">
+        select * from big_small_modulus
+        where league_name_simply = #{league_name_simply,jdbcType=VARCHAR}
+        ORDER BY gmt_create desc limit 1
+    </select>
+
+    <select id="getBigSmallModulusById" resultType="com.shenchen.model.BigSmallModulus">
+        select * from big_small_modulus
+        where big_small_modulus_id = #{big_small_modulus_id,jdbcType=VARCHAR}
+    </select>
+
+
 </mapper>

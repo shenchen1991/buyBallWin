@@ -1,24 +1,53 @@
-//package com.shenchen.controller;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestMethod;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//
-//@RestController
-//@RequestMapping("/bigSmall")
-//public class BigSmallController {
-//
-//    @Autowired
-//    private IBigSmallService bigSmallService;
-//
-//    @RequestMapping(value="/getBigSmallData.do",method=RequestMethod.GET)
-//    public String getBigSmallData(){
-//        bigSmallService.getBigSmallData();
-//        return "getBigSmallData";
-//    }
-//
+package com.shenchen.controller;
+
+import com.shenchen.model.BigSmallData;
+import com.shenchen.model.BigSmallDataResult;
+import com.shenchen.service.IBigSmallService;
+import com.shenchen.service.impl.BigSmallServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+
+@RestController
+@RequestMapping("/bigSmall")
+public class BigSmallController {
+
+    protected final static Logger logger = Logger.getLogger(BigSmallController.class);
+
+    @Autowired
+    private IBigSmallService bigSmallService;
+
+    @RequestMapping(value="/getAllBigSmallData.do",method=RequestMethod.GET)
+    public List<BigSmallDataResult> getBigSmallData(){
+        return bigSmallService.getAllBigSmallResultData();
+    }
+
+    @RequestMapping(value="/getBigSmallDataBy.do",method=RequestMethod.GET)
+    public List<BigSmallDataResult> getBigSmallDataBy(Integer isEnd,Integer isBuy){
+        BigSmallData query = new BigSmallData();
+        query.setIs_end(isEnd);
+        query.setIsBuy(isBuy);
+        return bigSmallService.getBigSmallResultDataBy(query);
+    }
+
+    @RequestMapping(value="/calculationResult.do",method=RequestMethod.GET)
+    public String calculationResult(){
+        try{
+            bigSmallService.calculationResult();
+        }catch (Exception e){
+            logger.error("规律计算异常",e);
+            return "fail";
+        }
+        return "success";
+
+    }
+
 //    @RequestMapping(value="/updateBigSmallData.do",method=RequestMethod.GET)
 //    public String updateBigSmallData(){
 //        bigSmallService.updateBigSmallData();
@@ -36,6 +65,6 @@
 //        bigSmallService.getBigSmallDataNew();
 //        return "getBigSmallDataNew";
 //    }
-//
-//
-//}
+
+
+}

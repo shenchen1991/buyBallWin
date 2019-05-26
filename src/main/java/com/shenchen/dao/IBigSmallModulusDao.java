@@ -8,4 +8,8 @@ public interface IBigSmallModulusDao {
 
     Integer deleteAllBigSmallModulus();
 
+    BigSmallModulus getOneBigSmallModulus(BigSmallModulus bigSmallModulus);
+
+    BigSmallModulus getBigSmallModulusById(String big_small_modulus_id);
+
 }

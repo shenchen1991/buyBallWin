@@ -80,6 +80,18 @@ public class BigSmallData implements Serializable {
     //购买结果
     private BigDecimal buy_result;
 
+    //真实购买结果
+    private BigDecimal buy_result_real;
+
+    //规律Id
+    private String modulus_id;
+
+    //已计算 0 未计算 1 已经计算
+    private Integer is_end;
+
+    //购买
+    private Integer isBuy;
+
 
 
 }

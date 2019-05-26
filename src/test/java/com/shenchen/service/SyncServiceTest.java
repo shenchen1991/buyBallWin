@@ -28,6 +28,12 @@ public class SyncServiceTest extends TestSupport {
     }
 
     @Test
+    public void testSyncDataFromNetIncrement(){
+        syncService.syncDataFromNetIncrement();
+    }
+
+
+    @Test
     public void testSyncRankData() throws IOException {
         syncService.syncRankData();
     }

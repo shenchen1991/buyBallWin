@@ -13,6 +13,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -58,7 +59,7 @@ public class SyncServiceImpl implements ISyncService {
         //先移除所有数据
 //            asiansDao.deleteAsiansHistoryData();
 //            europeDao.deleteEuropeHistoryData();
-            bigSmallDao.deleteAllBigSmallData();
+            bigSmallDao.deleteAllBigSmallHistoryData();
 //            gameBaseDao.deleteAllGameBaseData();
             while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
                 List<GameBean> gameBeans;
@@ -94,11 +95,10 @@ public class SyncServiceImpl implements ISyncService {
     }
 
 
-
     @Override
     public void syncBaseDataFromNet() {
         Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),-1);
-        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-30);
+        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-3);
         //移除所有数据
         while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
             List<GameBean> gameBeans;
@@ -132,8 +132,9 @@ public class SyncServiceImpl implements ISyncService {
     @Override
     @Transactional
     public void syncBigSmallDataFromNet() {
-        Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),-1);
-        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-20);
+        Date now = new Date();
+        Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),0);
+        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-3);
         while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
             List<GameBean> gameBeans;
             String dateStr = DateUtils.dayFormatString(startCalendar.getTime());
@@ -148,8 +149,18 @@ public class SyncServiceImpl implements ISyncService {
                         if(!GameCheckUtils.gameCheck(gameBean.getLEAGUE_NAME_SIMPLY())){
                             continue;
                         }
-                        //大小球数据
-                        createBigSmallHistoryData(gameBean);
+                        Date matchDate = DateUtils.str2Date("yyyy-MM-dd HH:mm:ss",gameBean.getMATCH_TIME());
+                        //比赛开始三小时前开始的比赛为历史比赛
+                        if (now.getTime() - matchDate.getTime() > 3*6*60*60000){
+                            //大小球数据
+                            createBigSmallHistoryData(gameBean);
+                            //同步历史赛事赛事基本信息
+                            createBaseGameData(gameBean);
+                        }else{
+                            //新的大小球数据
+                        }
+
+
                     }
                 }
                 startCalendar.add(Calendar.DAY_OF_MONTH, -1);// 往前一天
@@ -158,6 +169,54 @@ public class SyncServiceImpl implements ISyncService {
             }
         }
     }
+
+
+    @Override
+    @Transactional
+    @Scheduled(cron="0 0 4 * * ?")
+    public void syncDataFromNetIncrement() {
+        Date now = new Date();
+        Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),0);
+        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-4);
+        while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
+            List<GameBean> gameBeans;
+            String dateStr = DateUtils.dayFormatString(startCalendar.getTime());
+            logger.info("网站同步数据当前日期为："+ dateStr);
+            try{
+                //数据获取
+                String json =  HttpClient4.doGet("http://odds.zgzcw.com/odds/oyzs_ajax.action?type=qb&issue="+dateStr+"&date=&companys=14");
+                logger.info("网站获取信息为：" + json);
+                gameBeans = JSONObject.parseArray(json, GameBean.class);
+                if(!CollectionUtils.isEmpty(gameBeans)){
+                    for(GameBean gameBean : gameBeans){
+                        if(!GameCheckUtils.gameCheck(gameBean.getLEAGUE_NAME_SIMPLY())){
+                            continue;
+                        }
+                        Date matchDate = DateUtils.str2Date("yyyy-MM-dd HH:mm:ss",gameBean.getMATCH_TIME());
+                        //比赛开始三小时前开始的比赛为历史比赛
+                        if (now.getTime() - matchDate.getTime() > 3*60*60000){
+                            //大小球数据
+                            createBigSmallHistoryData(gameBean);
+                            //同步历史赛事赛事基本信息
+                            createBaseGameData(gameBean);
+
+                            updateBigSmallData(gameBean);
+
+                        }else{
+                            //新的大小球数据
+                            createBigSmallNewData(gameBean);
+                        }
+
+
+                    }
+                }
+                startCalendar.add(Calendar.DAY_OF_MONTH, -1);// 往前一天
+            }catch (Exception e){
+                logger.error("同步数据异常：",e);
+            }
+        }
+    }
+
 
 
 
@@ -267,11 +326,120 @@ public class SyncServiceImpl implements ISyncService {
                     bigSmallData.setBuy_big(new BigDecimal(0));
                     bigSmallData.setBuy_small(new BigDecimal(1.8));
                 }
-                bigSmallDao.deleteAllBigSmallDataBy(bigSmallData);
+                bigSmallDao.deleteBigSmallHistoryDataBy(bigSmallData);
+                bigSmallDao.insertBigSmallHistoryData(bigSmallData);
+            }
+        }
+    }
+
+    private void createBigSmallNewData(GameBean gameBean) throws ParseException {
+        BigSmallData bigSmallData = new BigSmallData();
+        bigSmallData.setMatch_id(gameBean.getID());
+        bigSmallData.setLeague_name_simply(gameBean.getLEAGUE_NAME_SIMPLY());
+        bigSmallData.setHost_name(gameBean.getHOST_NAME());
+        bigSmallData.setGuest_name(gameBean.getGUEST_NAME());
+        bigSmallData.setTotal_goal(gameBean.getHOST_GOAL() + gameBean.getGUEST_GOAL());
+        bigSmallData.setMatch_time(DateUtils.str2Date("yyyy-MM-dd HH:mm:ss",gameBean.getMATCH_TIME()));
+        if(!CollectionUtils.isEmpty(gameBean.getListOdds())){
+            for(CompanyOdd companyOdd : gameBean.getListOdds()){
+                bigSmallData.setCompany_name(companyOdd.getCOMPANY_NAME());
+                bigSmallData.setFirst_let_big_small(StringUtils.isBlank(companyOdd.getDW_FIRST_HANDICAP())? null : new BigDecimal(companyOdd.getDW_FIRST_HANDICAP()));
+                bigSmallData.setFirst_big(StringUtils.isBlank(companyOdd.getFIRST_BIG())? null : new BigDecimal(companyOdd.getFIRST_BIG()));
+                bigSmallData.setFirst_small(StringUtils.isBlank(companyOdd.getFIRST_SMALL())? null : new BigDecimal(companyOdd.getFIRST_SMALL()));
+                bigSmallData.setLet_big_small(StringUtils.isBlank(companyOdd.getDW_HANDICAP())? null : new BigDecimal(companyOdd.getDW_HANDICAP()));
+                bigSmallData.setBig(StringUtils.isBlank(companyOdd.getBIG())? null : new BigDecimal(companyOdd.getBIG()));
+                bigSmallData.setSmall(StringUtils.isBlank(companyOdd.getSMALL())? null : new BigDecimal(companyOdd.getSMALL()));
+                if( bigSmallData.getFirst_let_big_small() == null){
+                    continue;
+                }
+                //新表中获取数据
+                BigSmallData newBigSmallData = bigSmallDao.getBigSmallDataByMatchId(bigSmallData.getMatch_id());
+                if(newBigSmallData != null && newBigSmallData.getFirst_let_big_small() != null ){
+                    return;
+                }
+                bigSmallDao.deleteBigSmallNewDataBy(bigSmallData);
                 bigSmallDao.insertBigSmallData(bigSmallData);
             }
         }
     }
+
+
+    private void updateBigSmallData(GameBean gameBean) throws ParseException {
+        BigSmallData bigSmallData = new BigSmallData();
+        bigSmallData.setMatch_id(gameBean.getID());
+        bigSmallData.setLeague_name_simply(gameBean.getLEAGUE_NAME_SIMPLY());
+        bigSmallData.setHost_name(gameBean.getHOST_NAME());
+        bigSmallData.setGuest_name(gameBean.getGUEST_NAME());
+        bigSmallData.setHost_goal(gameBean.getHOST_GOAL());
+        bigSmallData.setGuest_goal(gameBean.getGUEST_GOAL());
+        if(gameBean.getHOST_GOAL() > gameBean.getGUEST_GOAL()){
+            bigSmallData.setGame_result(1);
+        }else if (gameBean.getGUEST_GOAL() == gameBean.getHOST_GOAL()){
+            bigSmallData.setGame_result(2);
+        }else{
+            bigSmallData.setGame_result(3);
+        }
+        bigSmallData.setTotal_goal(gameBean.getHOST_GOAL() + gameBean.getGUEST_GOAL());
+        bigSmallData.setMatch_time(DateUtils.str2Date("yyyy-MM-dd HH:mm:ss",gameBean.getMATCH_TIME()));
+        if(!CollectionUtils.isEmpty(gameBean.getListOdds())){
+            for(CompanyOdd companyOdd : gameBean.getListOdds()){
+                bigSmallData.setCompany_name(companyOdd.getCOMPANY_NAME());
+                bigSmallData.setFirst_let_big_small(StringUtils.isBlank(companyOdd.getDW_FIRST_HANDICAP())? null : new BigDecimal(companyOdd.getDW_FIRST_HANDICAP()));
+                bigSmallData.setFirst_big(StringUtils.isBlank(companyOdd.getFIRST_BIG())? null : new BigDecimal(companyOdd.getFIRST_BIG()));
+                bigSmallData.setFirst_small(StringUtils.isBlank(companyOdd.getFIRST_SMALL())? null : new BigDecimal(companyOdd.getFIRST_SMALL()));
+                bigSmallData.setLet_big_small(StringUtils.isBlank(companyOdd.getDW_HANDICAP())? null : new BigDecimal(companyOdd.getDW_HANDICAP()));
+                bigSmallData.setBig(StringUtils.isBlank(companyOdd.getBIG())? null : new BigDecimal(companyOdd.getBIG()));
+                bigSmallData.setSmall(StringUtils.isBlank(companyOdd.getSMALL())? null : new BigDecimal(companyOdd.getSMALL()));
+                if(bigSmallData.getHost_goal() == null
+                        || bigSmallData.getGuest_goal() == null
+                        || bigSmallData.getFirst_let_big_small() == null){
+                    continue;
+                }
+                BigDecimal bigSmallResult = new BigDecimal(bigSmallData.getTotal_goal())
+//                        .subtract(bigSmallData.getLet_big_small());
+                        .subtract(bigSmallData.getFirst_let_big_small());
+                if(bigSmallResult.doubleValue() > 0.3){
+                    bigSmallData.setBuy_big(new BigDecimal(1.8));
+                    bigSmallData.setBuy_small(new BigDecimal(0));
+                }else if(bigSmallResult.doubleValue() < 0.3 && bigSmallResult.doubleValue() > 0){
+                    bigSmallData.setBuy_big(new BigDecimal(1.4));
+                    bigSmallData.setBuy_small(new BigDecimal(0.5));
+                }else if(bigSmallResult.doubleValue() == 0){
+                    bigSmallData.setBuy_big(new BigDecimal(1));
+                    bigSmallData.setBuy_small(new BigDecimal(1));
+                }else if(bigSmallResult.doubleValue() < 0&& bigSmallResult.doubleValue() > -0.3){
+                    bigSmallData.setBuy_big(new BigDecimal(0.5));
+                    bigSmallData.setBuy_small(new BigDecimal(1.4));
+                }else if(bigSmallResult.doubleValue() < -0.3 ){
+                    bigSmallData.setBuy_big(new BigDecimal(0));
+                    bigSmallData.setBuy_small(new BigDecimal(1.8));
+                }
+                //新表中获取数据
+                BigSmallData newBigSmallData = bigSmallDao.getBigSmallDataByMatchId(bigSmallData.getMatch_id());
+                if(newBigSmallData == null){
+                    return;
+                }
+                BigSmallData update = new BigSmallData();
+                update.setMatch_id(bigSmallData.getMatch_id());
+                update.setHost_goal(bigSmallData.getHost_goal());
+                update.setGuest_goal(bigSmallData.getGuest_goal());
+                update.setGame_result(bigSmallData.getGame_result());
+                update.setBuy_big(bigSmallData.getBuy_big());
+                update.setBuy_small(bigSmallData.getBuy_small());
+                if(newBigSmallData.getBig_small_pre() != null){
+                    if(newBigSmallData.getBig_small_pre() == 1 ){
+                        update.setBuy_result_real(bigSmallData.getBuy_big());
+                    }else if(newBigSmallData.getBig_small_pre() == 2){
+                        update.setBuy_result_real(bigSmallData.getBuy_small());
+                    }
+                    update.setBuy_result_real(update.getBuy_result_real().subtract(new BigDecimal(1)));
+                }
+                update.setIs_end(1);
+                bigSmallDao.updateBigSmallData(update);
+            }
+        }
+    }
+
 
 
     private void createEuropeHistoryData(GameBean gameBean) throws ParseException {
