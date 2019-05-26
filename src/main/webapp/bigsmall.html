@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>我的预算网页</title>
+    <link rel="icon" href="static/image/title.ico" type="image/x-icon">
     <link rel="stylesheet" href="static/element-ui/lib/theme-chalk/index.css"/>
     <link rel="stylesheet" href="static/font/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="static/css/goods.css"/>
@@ -37,14 +38,15 @@
                                    @click="getIsNotEneBigSmallData()">未结算数据
                         </el-button>
                         <el-button icon="el-icon-refresh"
-                                   @click="getIsEneBigSmallData()">购买，结算数据
+                                   @click="getBuyIsEneBigSmallData()">购买，结算数据
                         </el-button>
                         <el-button icon="el-icon-refresh"
-                                   @click="getIsNotEneBigSmallData()">购买，未结算数据
+                                   @click="getBuyIsNotEneBigSmallData()">购买，未结算数据
                         </el-button>
 
                     </el-row>
                 </div>
+                <br/>
                 <!-- 列表 -->
                 <el-table
                         ref="bigSmall"
@@ -184,7 +186,7 @@
                     </el-table-column>
                     <el-table-column
                             align="center"
-                            label="预算胜率/"
+                            label="预算胜率"
                             width="100"
                             style="color: red">
                         <template scope="scope">

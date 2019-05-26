@@ -107,7 +107,7 @@ var vm = new Vue({
         },
 
         // 购买，结算数据
-        getIsEneBigSmallData() {
+        getBuyIsEneBigSmallData() {
             this.loadings();
             this.createTime = this.getCreateTime();
             this.$http.get('bigSmall/getBigSmallDataBy.do?isEnd=1&isBuy=1').then(result => {
@@ -118,7 +118,7 @@ var vm = new Vue({
 
         },
         // 购买，未结算数据
-        getIsNotEneBigSmallData() {
+        getBuyIsNotEneBigSmallData() {
             this.loadings();
             this.createTime = this.getCreateTime();
             this.$http.get('bigSmall/getBigSmallDataBy.do?isEnd=0&isBuy=1').then(result => {
