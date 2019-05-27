@@ -27,6 +27,7 @@ var vm = new Vue({
                 seller: ''
             },
             winCount:0,
+            waterCount:0,
             lostCount:0,
             //添加dialog
             showSave: false,
@@ -113,7 +114,12 @@ var vm = new Vue({
             this.$http.get('bigSmall/getBigSmallDataBy.do?isEnd=1&isBuy=1').then(result => {
                 this.bigSmall = result.body;
             this.loading.close(); //数据更新成功就手动关闭动画
-
+        });
+            this.$http.get('bigSmall/countBigSmallDataBy.do?isEnd=1&isBuy=1').then(result => {
+                this.winCount = result.body.winCount;
+                this.waterCount = result.body.waterCount;
+                this.lostCount = result.body.lostCount;
+            this.loading.close(); //数据更新成功就手动关闭动画
         });
 
         },

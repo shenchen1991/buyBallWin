@@ -43,8 +43,27 @@
                         <el-button icon="el-icon-refresh"
                                    @click="getBuyIsNotEneBigSmallData()">购买，未结算数据
                         </el-button>
-
                     </el-row>
+                    <span class="el-tag avue-tip">
+                    <i class="el-icon-info"></i>
+                    <span class="name">
+                        盈利
+                        <span class="count">{{winCount}}</span>
+                        项
+                    </span>
+                    <i class="el-icon-info"></i>
+                        <span class="name">
+                        走水
+                        <span class="count">{{waterCount}}</span>
+                        项
+                    </span>
+                    <i class="el-icon-info"></i>
+                        <span class="name">
+                        亏损
+                        <span class="count">{{lostCount}}</span>
+                        项
+                    </span>
+                </span>
                 </div>
                 <br/>
                 <!-- 列表 -->

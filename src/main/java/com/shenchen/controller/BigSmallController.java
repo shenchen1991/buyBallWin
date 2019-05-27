@@ -1,10 +1,9 @@
 package com.shenchen.controller;
 
+import com.shenchen.model.BigSmallCountResult;
 import com.shenchen.model.BigSmallData;
 import com.shenchen.model.BigSmallDataResult;
 import com.shenchen.service.IBigSmallService;
-import com.shenchen.service.impl.BigSmallServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +33,29 @@ public class BigSmallController {
         query.setIs_end(isEnd);
         query.setIsBuy(isBuy);
         return bigSmallService.getBigSmallResultDataBy(query);
+    }
+
+
+    @RequestMapping(value="/countBigSmallDataBy.do",method=RequestMethod.GET)
+    public BigSmallCountResult countBigSmallDataBy(Integer isEnd, Integer isBuy){
+        BigSmallCountResult bigSmallCountResult = new BigSmallCountResult();
+        BigSmallData query = new BigSmallData();
+        query.setIs_end(isEnd);
+        query.setIsBuy(isBuy);
+        List<BigSmallDataResult> result= bigSmallService.getBigSmallResultDataBy(query);
+        for(BigSmallDataResult bigSmallDataResult : result){
+            if(bigSmallDataResult.getBuy_result_real() != null){
+                if(bigSmallDataResult.getBuy_result_real().doubleValue() > 0 ){
+                    bigSmallCountResult.setWinCount(bigSmallCountResult.getWinCount() + 1);
+                }else if(bigSmallDataResult.getBuy_result_real().doubleValue() == 0 ){
+                    bigSmallCountResult.setWaterCount(bigSmallCountResult.getWaterCount() + 1);
+                }else if(bigSmallDataResult.getBuy_result_real().doubleValue() < 0 ){
+                    bigSmallCountResult.setLostCount(bigSmallCountResult.getLostCount() + 1);
+                }
+            }
+
+        }
+        return bigSmallCountResult;
     }
 
     @RequestMapping(value="/calculationResult.do",method=RequestMethod.GET)
