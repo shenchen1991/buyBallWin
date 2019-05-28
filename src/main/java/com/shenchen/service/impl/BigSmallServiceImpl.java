@@ -256,7 +256,7 @@ public class BigSmallServiceImpl implements IBigSmallService {
                 query.setLeague_name_simply(bigSmallData.getLeague_name_simply());
                 BigSmallModulus result = bigSmallModulusDao.getOneBigSmallModulus(query);
                 if(result != null){
-                    if(result.getWin_rate().doubleValue() < 0.56 || result.getRate().doubleValue() < 0.03){
+                    if(result.getWin_rate().doubleValue() < 0.56 || result.getRate().doubleValue() < 0){
                         continue;
                     }
                     //获取主队历史比赛数据

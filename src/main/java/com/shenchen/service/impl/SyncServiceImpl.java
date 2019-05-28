@@ -177,7 +177,7 @@ public class SyncServiceImpl implements ISyncService {
     public void syncDataFromNetIncrement() {
         Date now = new Date();
         Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),0);
-        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-4);
+        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-5);
         while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
             List<GameBean> gameBeans;
             String dateStr = DateUtils.dayFormatString(startCalendar.getTime());

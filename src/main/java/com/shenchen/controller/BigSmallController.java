@@ -63,7 +63,7 @@ public class BigSmallController {
         try{
             bigSmallService.calculationResult();
         }catch (Exception e){
-            logger.error("规律计算异常",e);
+            logger.error("预测异常",e);
             return "fail";
         }
         return "success";

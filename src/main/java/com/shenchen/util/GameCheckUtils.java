@@ -8,9 +8,6 @@ import java.util.Map;
 
 public class GameCheckUtils implements Serializable {
 
-
-
-
     public static boolean gameCheck(String league_name_simply){
         String[] strings = {
                 "英超","英冠","英甲","英乙",
@@ -32,7 +29,12 @@ public class GameCheckUtils implements Serializable {
                 "土甲",
                 "阿甲","阿乙",
                 "波兰超",
-                "澳洲甲"
+
+                "澳超",
+                "日职",
+                "日乙",
+                "巴甲",
+                "美职"
 
         };
         return Arrays.asList(strings).contains(league_name_simply);
@@ -59,6 +61,12 @@ public class GameCheckUtils implements Serializable {
                 "捷甲",
                 "罗甲",
                 "土甲",
+
+                "澳超",
+                "日职",
+                "日乙",
+                "巴甲",
+                "美职"
 
 
         };

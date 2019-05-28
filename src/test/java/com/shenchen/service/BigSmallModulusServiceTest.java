@@ -10,7 +10,7 @@ public class BigSmallModulusServiceTest extends TestSupport {
     IBigSmallModulusService bigSmallModulusService;
 
     @Test
-    public void testSyncDataFromNet(){
+    public void testCreateBigSmallModulus(){
         bigSmallModulusService.createBigSmallModulus();
     }
 

@@ -151,7 +151,7 @@
         <where>
             AND is_end = #{is_end,jdbcType=INTEGER}
             <if test="isBuy == 1">
-                AND modulus_id is not null
+            AND modulus_id is not null
             </if>
             <if test="isBuy == 0">
                 AND modulus_id is null
