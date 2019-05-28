@@ -53,6 +53,7 @@ var vm = new Vue({
 
             loading: {},
             activeIndex: '2', //默认激活
+            tableHeight: window.innerHeight -290,
         }
     },
     methods: {

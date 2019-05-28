@@ -9,7 +9,6 @@ import com.shenchen.model.*;
 import com.shenchen.service.IBigSmallService;
 import com.shenchen.util.DateUtils;
 import com.shenchen.util.RedisPoolJava;
-import lombok.Builder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -18,7 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service("bigSmallService")
@@ -246,6 +246,9 @@ public class BigSmallServiceImpl implements IBigSmallService {
         List<BigSmallData> newBigSmallData = bigSmallDao.getBigSmallData();
         for(BigSmallData bigSmallData : newBigSmallData){
             if(bigSmallData.getModulus_id() != null){
+                continue;
+            }
+            if(bigSmallData.getIs_end() == 1){
                 continue;
             }
 //            if(bigSmallData.getMatch_time().getTime() - 60 * 60000> new Date().getTime()){

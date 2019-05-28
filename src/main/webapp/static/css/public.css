@@ -36,6 +36,10 @@ a {
     color: black;
 }
 
+.name-red {
+    color: red;
+}
+
 .count {
     color: #409eff;
     font-size: 16px;

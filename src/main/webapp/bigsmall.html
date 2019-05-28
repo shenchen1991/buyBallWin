@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="static/css/public.css"/>
 </head>
 <body>
-<div id="app">
+<div id="app" style="height: 100%">
     <!-- header -->
     <el-menu mode="horizontal" :default-active="activeIndex">
         <el-menu-item index="0" id="logo">偏门秘籍 最新请求时间：{{createTime}}</el-menu-item>
     </el-menu>
-    <div id="main">
+    <div id="main" style="height: 95%">
         <el-col>
             <el-card shadow="hover">
                 <!-- 功能按钮 -->
@@ -45,25 +45,27 @@
                         </el-button>
                     </el-row>
                     <span class="el-tag avue-tip">
-                    <i class="el-icon-info"></i>
-                    <span class="name">
-                        盈利
-                        <span class="count">{{winCount}}</span>
-                        项
-                    </span>
-                    <i class="el-icon-info"></i>
+                        <i class="el-icon-info"></i>
                         <span class="name">
-                        走水
-                        <span class="count">{{waterCount}}</span>
-                        项
+                            盈利
+                            <span class="count">{{winCount}}</span>
+                            项&nbsp;&nbsp;&nbsp;
+                        </span>
+
+                        <i class="el-icon-info"></i>
+                        <span class="name-red">
+                            走水
+                            <span class="count">{{waterCount}}</span>
+                            项&nbsp;&nbsp;&nbsp;
+                        </span>
+
+                        <i class="el-icon-info"></i>
+                        <span class="name-red">
+                            亏损
+                            <span class="count">{{lostCount}}</span>
+                            项
+                        </span>
                     </span>
-                    <i class="el-icon-info"></i>
-                        <span class="name">
-                        亏损
-                        <span class="count">{{lostCount}}</span>
-                        项
-                    </span>
-                </span>
                 </div>
                 <br/>
                 <!-- 列表 -->
@@ -72,7 +74,7 @@
                         :data="bigSmall"
                         border
                         tooltip-effect="dark"
-                        :height="750"
+                        :height="tableHeight"
                         even-bg-color="#f4f4f4"
                         row-hover-color="#eee"
                         row-click-color="#edf7ff"
