@@ -9,8 +9,10 @@ public class BigSmallServiceTest extends TestSupport {
     @Autowired
     IBigSmallService bigSmallService;
 
-    @Autowired
-    IBigSmallModulusService bigSmallModulusService;
+    @Test
+    public void getAllBigSmallResultDataTest(){
+        bigSmallService.getAllBigSmallResultData();
+    }
 
     @Test
     public void calculationResultTest(){
