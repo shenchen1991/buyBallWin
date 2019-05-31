@@ -2,10 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.shenchen.dao.IBigSmallDao" >
 
-
-
-
-
     <insert id="insertBigSmallHistoryData" parameterType="com.shenchen.model.BigSmallData">
         INSERT INTO `big_small_history_data` (
                     `match_id`,
@@ -57,8 +53,13 @@
         select * from big_small_history_data
     </select>
 
+    <select id="getBigSmallHistoryDataBy" resultType="com.shenchen.model.BigSmallData">
+        select * from big_small_history_data
+        where league_name_simply =  #{league_name_simply,jdbcType=VARCHAR} and company_name = #{company_name,jdbcType=VARCHAR}
+    </select>
+
     <delete id="deleteBigSmallHistoryDataBy" parameterType="com.shenchen.model.BigSmallData">
-        delete from big_small_history_data where match_id =  #{match_id,jdbcType=VARCHAR}
+        delete from big_small_history_data where match_id =  #{match_id,jdbcType=VARCHAR} and company_name = #{company_name,jdbcType=VARCHAR}
     </delete>
 
     <delete id="deleteAllBigSmallHistoryData">
@@ -138,7 +139,7 @@
     </insert>
 
     <delete id="deleteBigSmallNewDataBy" parameterType="com.shenchen.model.BigSmallData">
-        delete from big_small_data where match_id =  #{match_id,jdbcType=VARCHAR}
+        delete from big_small_data where match_id =  #{match_id,jdbcType=VARCHAR} and company_name = #{company_name,jdbcType=VARCHAR}
     </delete>
 
 
@@ -151,17 +152,22 @@
         <where>
             AND is_end = #{is_end,jdbcType=INTEGER}
             <if test="isBuy == 1">
-            AND modulus_id is not null
+                AND modulus_id is not null
             </if>
             <if test="isBuy == 0">
                 AND modulus_id is null
+            </if>
+            <if test="company_name != null and company_name != ''">
+                and company_name = #{company_name,jdbcType=VARCHAR}
             </if>
         </where>
         ORDER BY match_time
     </select>
 
     <select id="getBigSmallDataByMatchId" resultType="com.shenchen.model.BigSmallData">
-        select * from big_small_data where match_id = #{match_id,jdbcType=VARCHAR}
+        select * from big_small_data
+        where match_id =  #{match_id,jdbcType=VARCHAR}
+        and company_name = #{company_name,jdbcType=VARCHAR}
     </select>
 
 
@@ -178,6 +184,18 @@
             <if test="buy_result_real != null" >buy_result_real = #{buy_result_real,jdbcType=DECIMAL},</if>
             <if test="modulus_id != null" >modulus_id = #{modulus_id,jdbcType=INTEGER},</if>
             <if test="is_end != null" >is_end = #{is_end,jdbcType=INTEGER},</if>
+        </set>
+        WHERE match_id = #{match_id,jdbcType=VARCHAR} and company_name = #{company_name,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getBigSmallHistoryTestData" resultType="com.shenchen.model.BigSmallData">
+        select * from big_small_history_data_test
+    </select>
+
+    <update id="updateBigSmallTestData">
+        UPDATE big_small_history_data_test
+        <set>
+            <if test="per_bet != null" >per_bet = #{per_bet,jdbcType=DECIMAL},</if>
         </set>
         WHERE match_id = #{match_id,jdbcType=VARCHAR}
     </update>

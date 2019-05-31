@@ -24,38 +24,10 @@
                 <div>
                     <el-row>
                         <el-button icon="el-icon-refresh"
-                                   @click="getAllBigSmallData()">刷新获取最新
-                        </el-button>
-                        <el-button icon="el-icon-refresh"
-                                   @click="calculationResult()">开始预测
-                        </el-button>
-
-                        <el-button icon="el-icon-refresh"
-                                   @click="syncDataFromNetIncrement()">数据同步+购买结算
-                        </el-button>
-                        <el-button icon="el-icon-refresh"
                                    @click="getIsEneBigSmallData()">已结算数据
                         </el-button>
                         <el-button icon="el-icon-refresh"
                                    @click="getIsNotEneBigSmallData()">未结算数据
-                        </el-button>
-                        <el-button icon="el-icon-refresh"
-                                   @click="getBuyIsEneBigSmallData()">购买，结算数据
-                        </el-button>
-                        <el-button icon="el-icon-refresh"
-                                   @click="getBuyIsNotEneBigSmallData()">购买，未结算数据
-                        </el-button>
-                        <el-button icon="el-icon-refresh"
-                                   @click="getBuyIsEneBigSmallDataBy('韦德')">购买，结算数据(韦德)
-                        </el-button>
-                        <el-button icon="el-icon-refresh"
-                                   @click="getBuyIsNotEneBigSmallDataBy('韦德')">购买，未结算数据(韦德)
-                        </el-button>
-                        <el-button icon="el-icon-refresh"
-                                   @click="getBuyIsEneBigSmallDataBy('Bet365')">购买，结算数据(Bet365)
-                        </el-button>
-                        <el-button icon="el-icon-refresh"
-                                   @click="getBuyIsNotEneBigSmallDataBy('Bet365')">购买，未结算数据(Bet365)
                         </el-button>
                     </el-row>
                     <span class="el-tag avue-tip">
@@ -80,6 +52,7 @@
                             项
                         </span>
                     </span>
+
                 </div>
                 <br/>
                 <!-- 列表 -->
@@ -98,14 +71,6 @@
                             align="center"
                             type="selection"
                             width="55">
-                    </el-table-column>
-                    <el-table-column
-                            id="company_name"
-                            prop="company_name"
-                            align="center"
-                            fixed
-                            label="公司名称"
-                            width="80">
                     </el-table-column>
 
                     <el-table-column
@@ -151,42 +116,43 @@
 
                     <el-table-column
                             align="center"
-                            label="初始数据"
+                            label="公司信息"
                             width="85"
                             style="background-color: red">
                         <template scope="scope">
                             <span style="color: red">
-                                {{scope.row.first_big}}
+                                {{scope.row.bigSmallDataResult_WD.company_name}}
                             </span>
                             <br/>
-                            <span style="color: red">
-                                {{scope.row.first_let_big_small}}球
-                            </span>
                             <br/>
                             <span style="color: red">
-                                {{scope.row.first_small}}
+                                {{scope.row.bigSmallDataResult_365.company_name}}
                             </span>
                         </template>
                     </el-table-column>
+
+
                     <el-table-column
                             align="center"
-                            label="即时数据"
-                            width="85"
+                            label="让球信息"
+                            width="120"
                             style="background-color: red">
                         <template scope="scope">
-                            <span>
-                                {{scope.row.big}}
+                            <span style="color: red">
+                                {{scope.row.bigSmallDataResult_WD.first_big}}
+                                /{{scope.row.bigSmallDataResult_WD.first_let_big_small}}球
+                                /{{scope.row.bigSmallDataResult_WD.first_small}}
                             </span>
                             <br/>
-                            <span>
-                                {{scope.row.let_big_small}}球
-                            </span>
                             <br/>
-                            <span>
-                                {{scope.row.small}}
+                            <span style="color: red">
+                                {{scope.row.bigSmallDataResult_365.first_big}}
+                                /{{scope.row.bigSmallDataResult_365.first_let_big_small}}球
+                                /{{scope.row.bigSmallDataResult_365.first_small}}
                             </span>
                         </template>
                     </el-table-column>
+
 
                     <el-table-column
                             align="center"
@@ -194,10 +160,21 @@
                             width="100"
                             show-overflow-tooltip>
                         <template scope="scope">
-                            <span v-if="scope.row.big_small_pre === 1 "style="color: red">
+                            <span v-if="scope.row.bigSmallDataResult_WD.big_small_pre === 1 "style="color: red">
                                 大球
                             </span>
-                            <span v-else-if="scope.row.big_small_pre === 2 " style="color: red" >
+                            <span v-else-if="scope.row.bigSmallDataResult_WD.big_small_pre === 2 " style="color: red" >
+                                小球
+                            </span>
+                            <span v-else>
+                                暂不购买
+                            </span>
+                            <br/>
+                            <br/>
+                            <span v-if="scope.row.bigSmallDataResult_365.big_small_pre === 1 "style="color: red">
+                                大球
+                            </span>
+                            <span v-else-if="scope.row.bigSmallDataResult_365.big_small_pre === 2 " style="color: red" >
                                 小球
                             </span>
                             <span v-else>
@@ -211,17 +188,34 @@
                             width="140"
                             show-overflow-tooltip>
                         <template scope="scope">
-                            <span v-if="scope.row.is_end === 0 ">
+                            <span v-if="scope.row.bigSmallDataResult_WD.is_end === 0 ">
                                 未结算
                             </span>
-                            <span v-else-if="scope.row.buy_result_real > 0 "  >
-                                盈利({{scope.row.buy_result_real}})
+                            <span v-else-if="scope.row.bigSmallDataResult_WD.buy_result_real > 0 "  >
+                                盈利({{scope.row.bigSmallDataResult_WD.buy_result_real}})
                             </span>
-                            <span v-else-if="scope.row.buy_result_real === 0 " style="color: red" >
+                            <span v-else-if="scope.row.bigSmallDataResult_WD.buy_result_real === 0 " style="color: red" >
                                 走水
                             </span>
-                            <span v-else-if="scope.row.buy_result_real < 0 " style="color: red">
-                                亏损({{scope.row.buy_result_real}})
+                            <span v-else-if="scope.row.bigSmallDataResult_WD.buy_result_real < 0 " style="color: red">
+                                亏损({{scope.row.bigSmallDataResult_WD.buy_result_real}})
+                            </span>
+                            <span v-else >
+                                已经算，未购买
+                            </span>
+                            <br/>
+                            <br/>
+                            <span v-if="scope.row.bigSmallDataResult_365.is_end === 0 ">
+                                未结算
+                            </span>
+                            <span v-else-if="scope.row.bigSmallDataResult_365.buy_result_real > 0 "  >
+                                盈利({{scope.row.bigSmallDataResult_365.buy_result_real}})
+                            </span>
+                            <span v-else-if="scope.row.bigSmallDataResult_365.buy_result_real === 0 " style="color: red" >
+                                走水
+                            </span>
+                            <span v-else-if="scope.row.bigSmallDataResult_365.buy_result_real < 0 " style="color: red">
+                                亏损({{scope.row.bigSmallDataResult_365.buy_result_real}})
                             </span>
                             <span v-else >
                                 已经算，未购买
@@ -234,8 +228,13 @@
                             width="100"
                             style="color: red">
                         <template scope="scope">
-                            <span v-if="scope.row.modulus_id != null" style="color: red">
-                                {{scope.row.bigSmallModulus.win_rate}}
+                            <span v-if="scope.row.bigSmallDataResult_WD.modulus_id != null" style="color: red">
+                                {{scope.row.bigSmallDataResult_WD.bigSmallModulus.win_rate}}%
+                            </span>
+                            <br/>
+                            <br/>
+                            <span v-if="scope.row.bigSmallDataResult_365.modulus_id != null" style="color: red">
+                                {{scope.row.bigSmallDataResult_365.bigSmallModulus.win_rate}}%
                             </span>
                         </template>
                     </el-table-column>
@@ -245,8 +244,13 @@
                             width="100"
                             style="color: red">
                         <template scope="scope">
-                            <span v-if="scope.row.modulus_id != null" style="color: red">
-                                {{scope.row.bigSmallModulus.rate}}
+                            <span v-if="scope.row.bigSmallDataResult_WD.modulus_id != null" style="color: red">
+                                {{scope.row.bigSmallDataResult_WD.bigSmallModulus.rate}}%
+                            </span>
+                            <br/>
+                            <br/>
+                            <span v-if="scope.row.bigSmallDataResult_365.modulus_id != null" style="color: red">
+                                {{scope.row.bigSmallDataResult_365.bigSmallModulus.rate}}%
                             </span>
                         </template>
                     </el-table-column>
@@ -281,5 +285,5 @@
 <script type="text/javascript" src="static/vue/vue.js"></script>
 <script type="text/javascript" src="static/element-ui/lib/index.js"></script>
 <script type="text/javascript" src="static/vue/vue-resource.js"></script>
-<script type="text/javascript" src="static/js/bigSmall.js"></script>
+<script type="text/javascript" src="static/js/bigSmallCompare.js"></script>
 </html>

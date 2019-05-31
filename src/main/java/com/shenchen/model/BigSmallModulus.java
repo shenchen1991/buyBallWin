@@ -15,6 +15,9 @@ public class BigSmallModulus implements Serializable {
     //id
     private String big_small_modulus_id;
 
+    //公司名称
+    private String company_name;
+
     //联赛
     private String league_name_simply;
 

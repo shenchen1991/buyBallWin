@@ -10,6 +10,8 @@ public interface IBigSmallDao {
 
     List<BigSmallData> getBigSmallHistoryData();
 
+    List<BigSmallData> getBigSmallHistoryDataBy(BigSmallData bigSmallData);
+
     Integer deleteBigSmallHistoryDataBy(BigSmallData bigSmallData);
 
     Integer deleteAllBigSmallHistoryData();
@@ -29,8 +31,14 @@ public interface IBigSmallDao {
 
     List<BigSmallData> getBigSmallDataBy(BigSmallData bigSmallData);
 
-    BigSmallData getBigSmallDataByMatchId(String match_id);
+    BigSmallData getBigSmallDataByMatchId(BigSmallData bigSmallData);
 
     Integer updateBigSmallData(BigSmallData bigSmallData);
+
+
+
+    List<BigSmallData> getBigSmallHistoryTestData();
+
+    Integer updateBigSmallTestData(BigSmallData bigSmallData);
 
 }

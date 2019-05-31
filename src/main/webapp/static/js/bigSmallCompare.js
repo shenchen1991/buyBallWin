@@ -89,10 +89,16 @@ var vm = new Vue({
         getIsEneBigSmallData() {
             this.loadings();
             this.createTime = this.getCreateTime();
-            this.$http.get('bigSmall/getBigSmallDataBy.do?isEnd=1').then(result => {
+            this.$http.get('bigSmall/getBigSmallCompareDataBy.do?isEnd=1').then(result => {
                 this.bigSmall = result.body;
             this.loading.close(); //数据更新成功就手动关闭动画
 
+        });
+            this.$http.get('bigSmall/countBigSmallCompareDataBy.do?isEnd=1').then(result => {
+                this.winCount = result.body.winCount;
+            this.waterCount = result.body.waterCount;
+            this.lostCount = result.body.lostCount;
+            this.loading.close(); //数据更新成功就手动关闭动画
         });
 
         },
@@ -100,7 +106,7 @@ var vm = new Vue({
         getIsNotEneBigSmallData() {
             this.loadings();
             this.createTime = this.getCreateTime();
-            this.$http.get('bigSmall/getBigSmallDataBy.do?isEnd=0').then(result => {
+            this.$http.get('bigSmall/getBigSmallCompareDataBy.do?isEnd=0').then(result => {
                 this.bigSmall = result.body;
             this.loading.close(); //数据更新成功就手动关闭动画
 

@@ -73,7 +73,13 @@ public class GameCheckUtils implements Serializable {
         return Arrays.asList(strings);
     }
 
-
+    public static List<String> gameCompany(){
+        String[] strings = {
+//                "韦德",
+                "Bet365"
+        };
+        return Arrays.asList(strings);
+    }
 
     public static Map<Integer,String> getLeagueName(){
 

@@ -49,6 +49,9 @@ public class BigSmallData implements Serializable {
     //公司名称
     private String company_name;
 
+    //预测球数
+    private BigDecimal per_bet;
+
     //初始大小球
     private BigDecimal first_let_big_small;
 

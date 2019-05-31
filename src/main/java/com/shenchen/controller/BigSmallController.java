@@ -1,8 +1,6 @@
 package com.shenchen.controller;
 
-import com.shenchen.model.BigSmallCountResult;
-import com.shenchen.model.BigSmallData;
-import com.shenchen.model.BigSmallDataResult;
+import com.shenchen.model.*;
 import com.shenchen.service.IBigSmallService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,20 +26,22 @@ public class BigSmallController {
     }
 
     @RequestMapping(value="/getBigSmallDataBy.do",method=RequestMethod.GET)
-    public List<BigSmallDataResult> getBigSmallDataBy(Integer isEnd,Integer isBuy){
+    public List<BigSmallDataResult> getBigSmallDataBy(Integer isEnd,Integer isBuy,String company){
         BigSmallData query = new BigSmallData();
         query.setIs_end(isEnd);
         query.setIsBuy(isBuy);
+        query.setCompany_name(company);
         return bigSmallService.getBigSmallResultDataBy(query);
     }
 
 
     @RequestMapping(value="/countBigSmallDataBy.do",method=RequestMethod.GET)
-    public BigSmallCountResult countBigSmallDataBy(Integer isEnd, Integer isBuy){
+    public BigSmallCountResult countBigSmallDataBy(Integer isEnd, Integer isBuy,String company){
         BigSmallCountResult bigSmallCountResult = new BigSmallCountResult();
         BigSmallData query = new BigSmallData();
         query.setIs_end(isEnd);
         query.setIsBuy(isBuy);
+        query.setCompany_name(company);
         List<BigSmallDataResult> result= bigSmallService.getBigSmallResultDataBy(query);
         for(BigSmallDataResult bigSmallDataResult : result){
             if(bigSmallDataResult.getBuy_result_real() != null){
@@ -70,23 +70,76 @@ public class BigSmallController {
 
     }
 
-//    @RequestMapping(value="/updateBigSmallData.do",method=RequestMethod.GET)
-//    public String updateBigSmallData(){
-//        bigSmallService.updateBigSmallData();
-//        return "updateBigSmallData";
-//    }
-//
-//    @RequestMapping(value="/updateGoalData.do",method=RequestMethod.GET)
-//    public String updateGoalData(){
-//        bigSmallService.updateGoalData();
-//        return "updateGoalData";
-//    }
-//
-//    @RequestMapping(value="/getBigSmallDataNew.do",method=RequestMethod.GET)
-//    public String getBigSmallDataNew(){
-//        bigSmallService.getBigSmallDataNew();
-//        return "getBigSmallDataNew";
-//    }
 
 
+    @RequestMapping(value="/getBigSmallCompareDataBy.do",method=RequestMethod.GET)
+    public List<BigSmallDataCompareResult> getBigSmallCompareDataBy(Integer isEnd){
+        BigSmallData query = new BigSmallData();
+        query.setIs_end(isEnd);
+        return bigSmallService.getBigSmallCompareDataBy(query);
+    }
+
+
+    @RequestMapping(value="/countBigSmallCompareDataBy.do",method=RequestMethod.GET)
+    public BigSmallCountResult countBigSmallCompareDataBy(Integer isEnd){
+        BigSmallCountResult bigSmallCountResult = new BigSmallCountResult();
+        BigSmallData query = new BigSmallData();
+        query.setIs_end(isEnd);
+        List<BigSmallDataCompareResult> result= bigSmallService.getBigSmallCompareDataBy(query);
+        for(BigSmallDataCompareResult bigSmallDataCompareResult : result){
+            BigSmallDataResult bigSmallDataResult_WD = bigSmallDataCompareResult.getBigSmallDataResult_WD();
+            BigSmallDataResult bigSmallDataResult_365 = bigSmallDataCompareResult.getBigSmallDataResult_365();
+
+            if(bigSmallDataResult_WD.getModulus_id() != null
+                    && bigSmallDataResult_365.getModulus_id() == null){
+                if(bigSmallDataResult_WD.getBuy_result_real() != null){
+                    if(bigSmallDataResult_WD.getBuy_result_real().doubleValue() > 0 ){
+                        bigSmallCountResult.setWinCount(bigSmallCountResult.getWinCount() + 1);
+                    }else if(bigSmallDataResult_WD.getBuy_result_real().doubleValue() == 0 ){
+                        bigSmallCountResult.setWaterCount(bigSmallCountResult.getWaterCount() + 1);
+                    }else if(bigSmallDataResult_WD.getBuy_result_real().doubleValue() < 0 ){
+                        bigSmallCountResult.setLostCount(bigSmallCountResult.getLostCount() + 1);
+                    }
+                }
+            }else if(bigSmallDataResult_WD.getModulus_id() != null
+                    && bigSmallDataResult_365.getModulus_id() != null){
+                if(bigSmallDataResult_WD.getBigSmallModulus().getWin_rate().doubleValue()
+                        > bigSmallDataResult_365.getBigSmallModulus().getWin_rate().doubleValue()){
+                    if(bigSmallDataResult_WD.getBuy_result_real() != null){
+                        if(bigSmallDataResult_WD.getBuy_result_real().doubleValue() > 0 ){
+                            bigSmallCountResult.setWinCount(bigSmallCountResult.getWinCount() + 1);
+                        }else if(bigSmallDataResult_WD.getBuy_result_real().doubleValue() == 0 ){
+                            bigSmallCountResult.setWaterCount(bigSmallCountResult.getWaterCount() + 1);
+                        }else if(bigSmallDataResult_WD.getBuy_result_real().doubleValue() < 0 ){
+                            bigSmallCountResult.setLostCount(bigSmallCountResult.getLostCount() + 1);
+
+                        }
+                    }
+                }else {
+                    if(bigSmallDataResult_365.getBuy_result_real() != null){
+                        if(bigSmallDataResult_365.getBuy_result_real().doubleValue() > 0 ){
+                            bigSmallCountResult.setWinCount(bigSmallCountResult.getWinCount() + 1);
+                        }else if(bigSmallDataResult_365.getBuy_result_real().doubleValue() == 0 ){
+                            bigSmallCountResult.setWaterCount(bigSmallCountResult.getWaterCount() + 1);
+                        }else if(bigSmallDataResult_365.getBuy_result_real().doubleValue() < 0 ){
+                            bigSmallCountResult.setLostCount(bigSmallCountResult.getLostCount() + 1);
+
+                        }
+                    }
+                }
+            }else if (bigSmallDataResult_WD.getModulus_id() == null
+                    && bigSmallDataResult_365.getModulus_id() != null){
+                if(bigSmallDataResult_365.getBuy_result_real() != null){
+                    if(bigSmallDataResult_365.getBuy_result_real().doubleValue() > 0 ){
+                        bigSmallCountResult.setWinCount(bigSmallCountResult.getWinCount() + 1);
+                    }else if(bigSmallDataResult_365.getBuy_result_real().doubleValue() == 0 ){
+                        bigSmallCountResult.setWaterCount(bigSmallCountResult.getWaterCount() + 1);
+                    }else if(bigSmallDataResult_365.getBuy_result_real().doubleValue() < 0 ){
+                        bigSmallCountResult.setLostCount(bigSmallCountResult.getLostCount() + 1);
+                    }
+                }
+            }
+        }
+        return bigSmallCountResult;
+    }
 }

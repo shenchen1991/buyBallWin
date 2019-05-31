@@ -177,14 +177,14 @@ public class SyncServiceImpl implements ISyncService {
     public void syncDataFromNetIncrement() {
         Date now = new Date();
         Calendar startCalendar = DateUtils.getYesterdayOfNumber(new Date(),0);
-        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-3);
+        Calendar endCalendar = DateUtils.getYesterdayOfNumber(new Date(),-4);
         while(startCalendar.getTime().getTime() > endCalendar.getTime().getTime()){
             List<GameBean> gameBeans;
             String dateStr = DateUtils.dayFormatString(startCalendar.getTime());
             logger.info("网站同步数据当前日期为："+ dateStr);
             try{
                 //数据获取
-                String json =  HttpClient4.doGet("http://odds.zgzcw.com/odds/oyzs_ajax.action?type=qb&issue="+dateStr+"&date=&companys=14");
+                String json =  HttpClient4.doGet("http://odds.zgzcw.com/odds/oyzs_ajax.action?type=qb&issue="+dateStr+"&date=&companys=8,14");
                 logger.info("网站获取信息为：" + json);
                 gameBeans = JSONObject.parseArray(json, GameBean.class);
                 if(!CollectionUtils.isEmpty(gameBeans)){
@@ -353,7 +353,7 @@ public class SyncServiceImpl implements ISyncService {
                     continue;
                 }
                 //新表中获取数据
-                BigSmallData newBigSmallData = bigSmallDao.getBigSmallDataByMatchId(bigSmallData.getMatch_id());
+                BigSmallData newBigSmallData = bigSmallDao.getBigSmallDataByMatchId(bigSmallData);
                 if(newBigSmallData != null && newBigSmallData.getFirst_let_big_small() != null ){
                     return;
                 }
@@ -415,14 +415,16 @@ public class SyncServiceImpl implements ISyncService {
                     bigSmallData.setBuy_small(new BigDecimal(1.8));
                 }
                 //新表中获取数据
-                BigSmallData newBigSmallData = bigSmallDao.getBigSmallDataByMatchId(bigSmallData.getMatch_id());
+                BigSmallData newBigSmallData = bigSmallDao.getBigSmallDataByMatchId(bigSmallData);
                 if(newBigSmallData == null){
                     return;
                 }
                 BigSmallData update = new BigSmallData();
                 update.setMatch_id(bigSmallData.getMatch_id());
+                update.setCompany_name(bigSmallData.getCompany_name());
                 update.setHost_goal(bigSmallData.getHost_goal());
                 update.setGuest_goal(bigSmallData.getGuest_goal());
+                update.setTotal_goal(bigSmallData.getTotal_goal());
                 update.setGame_result(bigSmallData.getGame_result());
                 update.setBuy_big(bigSmallData.getBuy_big());
                 update.setBuy_small(bigSmallData.getBuy_small());

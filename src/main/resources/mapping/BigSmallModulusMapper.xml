@@ -4,6 +4,7 @@
 
     <insert id="insertBigSmallModulus" parameterType="com.shenchen.model.BigSmallModulus">
         INSERT INTO `big_small_modulus` (
+                    `company_name`,
                     `league_name_simply`,
                     `host_get`,
                     `host_lost`,
@@ -18,6 +19,7 @@
                     `rate`,
                     `win_rate`)
         VALUES(
+            #{company_name,jdbcType=VARCHAR},
             #{league_name_simply,jdbcType=VARCHAR},
             #{host_get,jdbcType=DECIMAL},
             #{host_lost,jdbcType=DECIMAL},
@@ -41,6 +43,7 @@
     <select id="getOneBigSmallModulus" resultType="com.shenchen.model.BigSmallModulus">
         select * from big_small_modulus
         where league_name_simply = #{league_name_simply,jdbcType=VARCHAR}
+        and company_name = #{company_name,jdbcType=VARCHAR}
         ORDER BY gmt_create desc limit 1
     </select>
 

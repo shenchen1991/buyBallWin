@@ -36,10 +36,13 @@ public class BigSmallServiceImpl implements IBigSmallService {
     IBigSmallModulusDao bigSmallModulusDao;
 
     @Override
-    public List<BigSmallModulus> analyseBigSmallEfficient(String league_name_simply, boolean reverse) {
+    public List<BigSmallModulus> analyseBigSmallEfficient(String league_name_simply,String company, boolean reverse) {
         List<BigSmallModulus> returnMap = new ArrayList<>();
         //获取大小球数据
-        List<BigSmallData> bigSmallDataList = bigSmallDao.getBigSmallHistoryData();
+        BigSmallData queryBigSmallData = new BigSmallData();
+        queryBigSmallData.setLeague_name_simply(league_name_simply);
+        queryBigSmallData.setCompany_name(company);
+        List<BigSmallData> bigSmallDataList = bigSmallDao.getBigSmallHistoryDataBy(queryBigSmallData);
         BigDecimal hostGet = new BigDecimal(1);
         BigDecimal hostLost = new BigDecimal(0);
         while(hostGet.doubleValue() > 0){
@@ -114,6 +117,7 @@ public class BigSmallServiceImpl implements IBigSmallService {
 
                 if(!CollectionUtils.isEmpty(updateBigSmallData)){
                     BigSmallModulus bigSmallModulus = new BigSmallModulus();
+                    bigSmallModulus.setCompany_name(company);
                     bigSmallModulus.setLeague_name_simply(league_name_simply);
                     bigSmallModulus.setHost_get(hostGet);
                     bigSmallModulus.setHost_lost(hostLost);
@@ -254,6 +258,7 @@ public class BigSmallServiceImpl implements IBigSmallService {
 //            if(bigSmallData.getMatch_time().getTime() - 60 * 60000> new Date().getTime()){
                 BigSmallModulus query = new BigSmallModulus();
                 query.setLeague_name_simply(bigSmallData.getLeague_name_simply());
+                query.setCompany_name(bigSmallData.getCompany_name());
                 BigSmallModulus result = bigSmallModulusDao.getOneBigSmallModulus(query);
                 if(result != null){
                     if(result.getWin_rate().doubleValue() < 0.56 || result.getRate().doubleValue() < 0){
@@ -343,6 +348,80 @@ public class BigSmallServiceImpl implements IBigSmallService {
             bigSmallDataResults.add(bigSmallDataResult);
         }
         return bigSmallDataResults;
+    }
+
+    @Override
+    public List<BigSmallDataCompareResult> getBigSmallCompareDataBy(BigSmallData query) {
+        List<BigSmallDataCompareResult> bigSmallDataCompareResults = new ArrayList<>();
+        query.setCompany_name("韦德");
+        List<BigSmallData> bigSmallDataList = bigSmallDao.getBigSmallDataBy(query);
+        for(BigSmallData bigSmallData : bigSmallDataList){
+            BigSmallDataCompareResult bigSmallDataCompareResult = new BigSmallDataCompareResult();
+            BeanUtils.copyProperties(bigSmallData,bigSmallDataCompareResult);
+            bigSmallDataCompareResult.setMatch_time_str(DateUtils.DateFormatString(bigSmallDataCompareResult.getMatch_time()));
+
+            BigSmallDataResult bigSmallDataResult_WD = new BigSmallDataResult();
+            BeanUtils.copyProperties(bigSmallData,bigSmallDataResult_WD);
+            if(StringUtils.isNotBlank(bigSmallDataResult_WD.getModulus_id())){
+                BigSmallModulus bigSmallModulus = bigSmallModulusDao.getBigSmallModulusById(bigSmallDataResult_WD.getModulus_id());
+                bigSmallDataResult_WD.setBigSmallModulus(bigSmallModulus);
+            }
+            bigSmallDataCompareResult.setBigSmallDataResult_WD(bigSmallDataResult_WD);
+
+            BigSmallData queryBigSmallData = new BigSmallData();
+            queryBigSmallData.setCompany_name("Bet365");
+            queryBigSmallData.setMatch_id(bigSmallData.getMatch_id());
+            BigSmallData bigSmallData_365 =bigSmallDao.getBigSmallDataByMatchId(queryBigSmallData);
+
+            BigSmallDataResult bigSmallDataResult_365 = new BigSmallDataResult();
+            if(bigSmallData_365 != null){
+                BeanUtils.copyProperties(bigSmallData_365,bigSmallDataResult_365);
+            }
+            if(StringUtils.isNotBlank(bigSmallDataResult_365.getModulus_id())){
+                BigSmallModulus bigSmallModulus = bigSmallModulusDao.getBigSmallModulusById(bigSmallDataResult_365.getModulus_id());
+                bigSmallDataResult_365.setBigSmallModulus(bigSmallModulus);
+            }
+            bigSmallDataCompareResult.setBigSmallDataResult_365(bigSmallDataResult_365);
+            bigSmallDataCompareResults.add(bigSmallDataCompareResult);
+        }
+        return bigSmallDataCompareResults;
+    }
+
+
+
+
+    @Override
+    public void analyseBigSmallBet() {
+        //获取大小球数据
+        List<BigSmallData> bigSmallDataList = bigSmallDao.getBigSmallHistoryTestData();
+        for(BigSmallData bigSmallData :  bigSmallDataList){
+            //获取主队历史比赛数据
+            HostGoalData hostGoalData = this.getHostGoalData(bigSmallData);
+            if(hostGoalData == null){
+                continue;
+            }
+            GuestGoalData guestGoalData = this.getGuestGoalData(bigSmallData);
+            if(guestGoalData == null){
+                continue;
+            }
+            BigDecimal perCount;
+            BigDecimal hostGetGoal = hostGoalData.getGetGoal().divide(hostGoalData.getGameNumber(),2,BigDecimal.ROUND_HALF_UP);
+//            hostGetGoal = hostGetGoal.multiply(hostGet);
+            BigDecimal hostLostGoal = hostGoalData.getLostGoal().divide(hostGoalData.getGameNumber(),2,BigDecimal.ROUND_HALF_UP);
+//            hostLostGoal = hostLostGoal.multiply(hostLost);
+
+            BigDecimal guestGetGoal = guestGoalData.getGetGoal().divide(guestGoalData.getGameNumber(),2,BigDecimal.ROUND_HALF_UP);
+//            guestGetGoal = guestGetGoal.multiply(guestGet);
+            BigDecimal guestLostGoal = hostGoalData.getLostGoal().divide(guestGoalData.getGameNumber(),2,BigDecimal.ROUND_HALF_UP);
+//            guestLostGoal = guestLostGoal.multiply(guestLost);
+
+            perCount = hostGetGoal.add(hostLostGoal).add(guestGetGoal).add(guestLostGoal);
+            bigSmallData.setPer_bet(perCount);
+
+            bigSmallDao.updateBigSmallTestData(bigSmallData);
+        }
+
+
     }
 
 
