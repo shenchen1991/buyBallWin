@@ -29,6 +29,7 @@ var vm = new Vue({
             winCount:0,
             waterCount:0,
             lostCount:0,
+            winRate:0,
             //添加dialog
             showSave: false,
             //编辑dialog
@@ -96,9 +97,11 @@ var vm = new Vue({
         });
             this.$http.get('bigSmall/countBigSmallCompareDataBy.do?isEnd=1').then(result => {
                 this.winCount = result.body.winCount;
-            this.waterCount = result.body.waterCount;
-            this.lostCount = result.body.lostCount;
-            this.loading.close(); //数据更新成功就手动关闭动画
+                this.waterCount = result.body.waterCount;
+                this.lostCount = result.body.lostCount;
+                this.winRate = this.winCount /(this.winCount + this.lostCount) * 100;
+                // this.winRate =  result.body.lostCount;
+                this.loading.close(); //数据更新成功就手动关闭动画
         });
 
         },

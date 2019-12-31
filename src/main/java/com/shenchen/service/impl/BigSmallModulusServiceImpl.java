@@ -46,9 +46,9 @@ public class BigSmallModulusServiceImpl implements IBigSmallModulusService {
         logger.info("大小球计算开始时间" + new Date());
         long startTime =  System.currentTimeMillis();
         List<String> gameNames = GameCheckUtils.gameList();
-        List<String> companys = GameCheckUtils.gameCompany();
+        List<String> companies = GameCheckUtils.gameCompany();
         for(String gameName : gameNames){
-            for(String company : companys){
+            for(String company : companies){
                 List<BigSmallModulus> result = new ArrayList<>();
                 BigSmallModulus maxData = null;
                 List<BigSmallModulus> fanResult = bigSmallService.analyseBigSmallEfficient(gameName,company,true);

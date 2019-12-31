@@ -75,8 +75,8 @@ public class GameCheckUtils implements Serializable {
 
     public static List<String> gameCompany(){
         String[] strings = {
-//                "韦德",
-                "Bet365"
+                "韦德",
+//                "Bet365"
         };
         return Arrays.asList(strings);
     }
